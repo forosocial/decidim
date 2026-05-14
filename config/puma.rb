@@ -29,6 +29,17 @@ port ENV.fetch("PORT", 3000)
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
 
+# Added by pepeherr
+# Le dice a Puma en qué modo está corriendo (development/production)
+environment ENV.fetch("RAILS_ENV", "development")
+
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
+
+# Added by pepeherr
+# múltiples procesos para atender peticiones concurrentes
+workers ENV.fetch("WEB_CONCURRENCY", 4)
+# carga la aplicación antes de hacer fork de los workers, ahorra memoria RAM significativamente
+preload_app!
+plugin :tmp_restart

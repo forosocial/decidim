@@ -69,7 +69,7 @@ end
     :user_name      => Decidim::Env.new("SMTP_USERNAME").to_s,
     :password       => Decidim::Env.new("SMTP_PASSWORD").to_s,
     :domain         => Decidim::Env.new("SMTP_DOMAIN").to_s,
-    :enable_starttls_auto => Decidim::Env.new("SMTP_STARTTLS_AUTO", true).present?,
+    :tls            => true,
     :openssl_verify_mode => 'none'
   }
 

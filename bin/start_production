@@ -1,0 +1,7 @@
+#!/bin/bash
+# para incluirlo en el servicio decidim.service
+set -a
+source /home/decidim/.rbenv-vars
+set +a
+export RAILS_SERVE_STATIC_FILES=true
+exec /home/decidim/.rbenv/bin/rbenv exec bundle exec puma -C config/puma.rb

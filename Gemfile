@@ -5,6 +5,10 @@ source "https://rubygems.org"
 ruby RUBY_VERSION
 
 gem "decidim", "0.31.4"
+gem "decidim-decidim_awesome"
+gem "decidim-extra_user_fields", github: "openpoke/decidim-module-extra_user_fields"
+gem "decidim-term_customizer", github: "openpoke/decidim-module-term_customizer"
+
 # gem "decidim-ai", "0.31.4"
 # gem "decidim-collaborative_texts", "0.31.4"
 # gem "decidim-conferences", "0.31.4"
@@ -17,6 +21,10 @@ gem "decidim", "0.31.4"
 gem "bootsnap", "~> 1.3"
 
 gem "puma", ">= 6.3.1"
+
+# Tareas asincronas
+gem "sidekiq"
+gem "redis"
 
 group :development, :test do
   gem "byebug", "~> 11.0", platform: :mri
