@@ -10,6 +10,7 @@ ExceptionNotification.configure do |config|
   config.ignored_exceptions += %w[
     ActionController::RoutingError
     ActionController::UnknownFormat
+    ActionController::InvalidCrossOriginRequest
     ActiveRecord::RecordNotFound
     Rack::QueryParser::InvalidParameterError
   ]
