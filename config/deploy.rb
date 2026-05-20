@@ -10,7 +10,7 @@ set :repo_url, "git@github.com:forosocial/decidim.git"
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, "/home/decidim/capistrano_decidim"
 
-set :brach, "main"
+set :branch, "main"
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
@@ -43,6 +43,10 @@ set :linked_dirs, %w{
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
+
+set :default_env, {
+  path: "/home/decidim/.nvm/versions/node/v22.22.2/bin:/home/decidim/.rbenv/shims:/home/decidim/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin"
+}
 
 set :rbenv_type, :user
 set :rbenv_ruby, File.read(".ruby-version").strip
