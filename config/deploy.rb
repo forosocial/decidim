@@ -43,3 +43,14 @@ set :keep_releases, 5
 
 # Logs
 set :log_level, :info
+
+# forzar explícitamente npm online dentro del deploy
+namespace :deploy do
+  before :updated, :fix_npm_config do
+    on roles(:app) do
+      execute :npm, "config set prefer-offline false"
+      execute :npm, "config set offline false"
+      execute :npm, "config delete cache-mode || true"
+    end
+  end
+end
