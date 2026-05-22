@@ -45,7 +45,8 @@ set :linked_dirs, %w{
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 set :default_env, {
-  path: "/home/decidim/.nvm/versions/node/v22.22.2/bin:/home/decidim/.rbenv/shims:/home/decidim/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin"
+  PATH: "/home/decidim/.nvm/versions/node/v18.20.8/bin:/home/decidim/.rbenv/shims:/home/decidim/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin",
+  NODE_ENV: "production"
 }
 
 set :rbenv_type, :user
