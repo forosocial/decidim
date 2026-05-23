@@ -1,18 +1,14 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.20.1"
-
 set :application, "decidim_forosocial"
 set :repo_url, "git@github.com:forosocial/decidim.git"
-
 set :deploy_to, "/home/decidim/capistrano_decidim"
 set :branch, "main"
-
 # Linked files
 set :linked_files, %w{
   config/master.key
   .rbenv-vars
 }
-
 # Linked directories
 set :linked_dirs, %w{
   log
@@ -21,7 +17,6 @@ set :linked_dirs, %w{
   tmp/sockets
   storage
 }
-
 # Entorno para Node/Ruby
 set :default_env, {
   'PATH' => "/home/decidim/.nvm/versions/node/v18.20.8/bin:/home/decidim/.rbenv/shims:/home/decidim/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin",
@@ -29,28 +24,30 @@ set :default_env, {
   'NODE_ENV' => "production",
   'RAILS_ENV' => "production"
 }
-
 # Fuerza explícitamente node/npm correctos
 SSHKit.config.command_map[:node] = "/home/decidim/.nvm/versions/node/v18.20.8/bin/node"
 SSHKit.config.command_map[:npm]  = "/home/decidim/.nvm/versions/node/v18.20.8/bin/npm"
-
 # rbenv
 set :rbenv_type, :user
 set :rbenv_ruby, File.read(".ruby-version").strip
-
 # Mantener releases
 set :keep_releases, 5
+set :assets_manifests, ['public/decidim-packs/manifest.json']
 
 # Logs
 set :log_level, :info
-
-# forzar explícitamente npm online dentro del deploy
 namespace :deploy do
   before :updated, :fix_npm_config do
     on roles(:app) do
       execute :npm, "config set prefer-offline false"
       execute :npm, "config set offline false"
-      execute :npm, "config delete cache-mode || true"
+      execute :npm, "config delete cache-mode", raise_on_non_zero_exit: false
+    end
+  end
+
+  before 'deploy:assets:precompile', :npm_install do
+    on roles(:app) do
+      execute :bash, "-c 'export PATH=/home/decidim/.nvm/versions/node/v18.20.8/bin:$PATH && cd #{release_path} && NODE_ENV=development /home/decidim/.nvm/versions/node/v18.20.8/bin/npm install'"
     end
   end
 end
