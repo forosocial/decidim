@@ -1,8 +1,8 @@
 require "sidekiq/web"
 
 # Sesión aislada para Sidekiq, sin interferir con la sesión de Decidim
-Sidekiq::Web.use ActionDispatch::Cookies
-Sidekiq::Web.use ActionDispatch::Session::CookieStore, key: "_sidekiq_session"
+# Sidekiq::Web.use ActionDispatch::Cookies
+# Sidekiq::Web.use ActionDispatch::Session::CookieStore, key: "_sidekiq_session"
 
 Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
