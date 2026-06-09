@@ -23,9 +23,8 @@ Rails.application.config.to_prepare do
         # El body se almacena como Hash translatable. Forzamos strip_tags: false
         # porque el editor TipTap necesita el HTML para inicializarse,
         # independientemente de rich_text_editor_in_public_views.
-        form.object[:body] = present(send(original_resource)).body(strip_tags: false).strip
-        options.delete(:value)
-        text_editor_for(form, :body, options)
+        body_value = present(send(original_resource)).body(strip_tags: false).strip
+        text_editor_for(form, :body, options.merge(value: body_value))
       end
     end
   end
