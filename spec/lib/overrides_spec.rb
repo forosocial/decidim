@@ -26,7 +26,7 @@ require "digest"
 
 OVERRIDES = {
   "decidim-core" => {
-    # Override: app/helpers/decidim/amendments_helper.rb
+    # Override: config/initializers/amendments_helper_override.rb
     # Motivo: amendments_form_field_for recibe el body como Hash translatable
     # {"es" => "<p>...</p>"} en lugar del string HTML de la traducción actual,
     # lo que impide que TipTap inicialice el editor correctamente al crear/editar
