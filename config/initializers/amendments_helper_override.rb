@@ -16,19 +16,23 @@ Rails.application.config.after_initialize do
   Decidim::AmendmentsHelper.class_eval do
     def decidim_amendments_form_field_for(attribute, form, original_resource)
       options = {
-        label: amendments_form_fields_label(attribute),
-        value: amendments_form_fields_value(original_resource, attribute)
+        label: amendments_form_fields_label(attribute)
       }
 
       case attribute
       when :title
-        form.text_field(:title, options)
+        form.text_field(:title, options.merge(
+          value: amendments_form_fields_value(original_resource, attribute)
+        ))
       when :body
-        # El body se almacena como Hash translatable. Forzamos strip_tags: false
-        # porque el editor TipTap necesita el HTML para inicializarse,
-        # independientemente de rich_text_editor_in_public_views.
-        body_value = present(send(original_resource)).body(strip_tags: false).strip
-        text_editor_for(form, :body, options.merge(value: body_value))
+        # Forzamos form.editor directamente porque text_editor_for cae en
+        # text_area cuando rich_text_editor_in_public_views es false.
+        # El formulario de enmienda siempre necesita TipTap independientemente
+        # de esa configuración.
+        options[:lines] ||= 25
+        options[:context] ||= "participant"
+        options[:value] = present(send(original_resource)).body(strip_tags: false).strip
+        form.editor(:body, options)
       end
     end
   end
