@@ -27,13 +27,12 @@ require "digest"
 OVERRIDES = {
   "decidim-core" => {
     # Override: config/initializers/amendments_helper_override.rb
-    # Motivo: amendments_form_field_for recibe el body como Hash translatable
-    # {"es" => "<p>...</p>"} en lugar del string HTML de la traducción actual,
-    # lo que impide que TipTap inicialice el editor correctamente al crear/editar
-    # una enmienda. El override fuerza form.object[:body] al string traducido
-    # antes de que hidden_field lo lea.
-    # Parcheamos decidim_amendments_form_field_for (alias que crea Awesome
-    # del método original de core) para corregir el bug del Hash translatable.
+    # Motivo: con rich_text_editor_in_public_views: false, text_editor_for
+    # renderiza un textarea plano en el formulario de enmienda en lugar de
+    # montar TipTap. El override llama a form.editor directamente y parchea
+    # decidim_amendments_form_field_for (alias que crea Awesome del original
+    # de core) para que el fix tenga efecto cuando Awesome no tiene custom
+    # fields configurados.
     "app/helpers/decidim/amendments_helper.rb" => "db42be326ff225c422e2c126d784b477"
   },
   "decidim-decidim_awesome" => {

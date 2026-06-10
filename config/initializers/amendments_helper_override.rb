@@ -1,18 +1,23 @@
 # config/initializers/amendments_helper_override.rb
 # frozen_string_literal: true
-
+#
 # Override de Decidim::AmendmentsHelper
-# Motivo: amendments_form_field_for recibe el body como Hash translatable
-# {"es" => "<p>...</p>"} en lugar del string HTML de la traducción actual,
-# lo que impide que TipTap inicialice el editor correctamente.
-# El override fuerza form.object[:body] al string traducido antes de que
-# hidden_field lo lea.
+#
+# Causa raíz: con rich_text_editor_in_public_views: false en la organización,
+# text_editor_for cae en form.text_area en lugar de form.editor (TipTap),
+# mostrando el HTML del body como texto plano en el formulario de enmienda.
+# El formulario de enmienda siempre necesita TipTap independientemente de
+# esa configuración, ya que es un formulario de edición, no una vista pública.
+#
+# Complejidad adicional: decidim-decidim_awesome sobreescribe
+# amendments_form_field_for y aliasa el original de core como
+# decidim_amendments_form_field_for. Nuestro override parchea ese alias
+# para que tenga efecto cuando Awesome no tiene custom fields configurados.
+#
+# Se usa after_initialize (en lugar de to_prepare) para garantizar que el
+# patch se aplica después del include de Awesome en su engine.
 
 Rails.application.config.after_initialize do
-  # Awesome incluye su override con include(), lo que aliasa el método original
-  # de core como decidim_amendments_form_field_for. Cuando no hay custom fields
-  # configurados, Awesome delega en ese alias — que tiene el bug del Hash
-  # translatable en :body. Parcheamos ese alias directamente.
   Decidim::AmendmentsHelper.class_eval do
     def decidim_amendments_form_field_for(attribute, form, original_resource)
       options = {
