@@ -8,9 +8,13 @@
 # El override fuerza form.object[:body] al string traducido antes de que
 # hidden_field lo lea.
 
-Rails.application.config.to_prepare do
+Rails.application.config.after_initialize do
+  # Awesome incluye su override con include(), lo que aliasa el método original
+  # de core como decidim_amendments_form_field_for. Cuando no hay custom fields
+  # configurados, Awesome delega en ese alias — que tiene el bug del Hash
+  # translatable en :body. Parcheamos ese alias directamente.
   Decidim::AmendmentsHelper.class_eval do
-    def amendments_form_field_for(attribute, form, original_resource)
+    def decidim_amendments_form_field_for(attribute, form, original_resource)
       options = {
         label: amendments_form_fields_label(attribute),
         value: amendments_form_fields_value(original_resource, attribute)

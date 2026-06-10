@@ -18,7 +18,7 @@ require "digest"
 #   4. Sustituye el checksum en este spec por el nuevo valor.
 #
 # Para añadir un nuevo override:
-#   1. Añade una entrada en el hash del gem correspondiente.
+#   1. Añadir una entrada en el hash del gem correspondiente.
 #   2. Obtén el checksum con:
 #        bundle exec ruby -e "require 'digest'; puts Digest::MD5.hexdigest(
 #          File.read(File.join(Gem::Specification.find_by_name('GEM').gem_dir, 'RUTA'))
@@ -32,8 +32,16 @@ OVERRIDES = {
     # lo que impide que TipTap inicialice el editor correctamente al crear/editar
     # una enmienda. El override fuerza form.object[:body] al string traducido
     # antes de que hidden_field lo lea.
-    # Fichero local: app/helpers/decidim/amendments_helper.rb
+    # Parcheamos decidim_amendments_form_field_for (alias que crea Awesome
+    # del método original de core) para corregir el bug del Hash translatable.
     "app/helpers/decidim/amendments_helper.rb" => "db42be326ff225c422e2c126d784b477"
+  },
+  "decidim-decidim_awesome" => {
+    # Override: config/initializers/amendments_helper_override.rb
+    # Si Awesome cambia su AmendmentsHelperOverride hay que revisar si
+    # el alias decidim_amendments_form_field_for sigue siendo el punto
+    # correcto donde aplicar el fix.
+    "app/helpers/concerns/decidim/decidim_awesome/amendments_helper_override.rb" => "875761b6e8e7d7b45bbdd339609f4fd9"
   }
 }.freeze
 
