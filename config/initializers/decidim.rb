@@ -53,4 +53,28 @@ Decidim.configure do |config|
 
   # Tiempo disponible para descarga de datos
   config.download_your_data_expiry_time = 7.days
+  
+  # Configuración de mapas con OpenStreetMap
+  # Tiles: tile.openstreetmap.org (raster PNG, compatible con Leaflet)
+  # Geocodificación: Nominatim (OSM)
+  # Autocompletado de direcciones: Photon (Komoot)
+  config.maps = {
+    provider: :osm,
+    dynamic: {
+      provider: :osm,
+      tile_layer: {
+        url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
+        max_zoom: 19
+      }
+    },
+    geocoding: {
+      host: "nominatim.openstreetmap.org",
+      use_https: true
+    },
+    autocomplete: {
+      url: "https://photon.komoot.io/api/"
+    }
+  }
+  
 end

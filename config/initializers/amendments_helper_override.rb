@@ -17,6 +17,8 @@
 # Se usa after_initialize (en lugar de to_prepare) para garantizar que el
 # patch se aplica después del include de Awesome en su engine.
 
+# Se ha reportado issue a https://github.com/decidim/decidim/issues/17088
+
 Rails.application.config.after_initialize do
   Decidim::AmendmentsHelper.class_eval do
     def decidim_amendments_form_field_for(attribute, form, original_resource)

@@ -3,16 +3,116 @@ User-agent: *
 Disallow: /profiles/
 Disallow: /search
 
-# Añadido para evitar bots de IA
+# --- Bots de entrenamiento de IA / LLMs ---
+
+#      Motor de búsqueda IA
 User-agent: GPTBot
 Disallow: /
 
-User-agent: CCBot
+#     Instancia de ChatGPT navegando en tiempo real (distinto de GPTBot)
+User-agent: ChatGPT-User
 Disallow: /
 
+#     Bot de búsqueda de OpenAI
+User-agent: OAI-SearchBot
+Disallow: /
+
+#      Motor de búsqueda IA
 User-agent: anthropic-ai
 Disallow: /
 
+#     Nombre alternativo del crawler de Anthropi
+User-agent: ClaudeBot
+Disallow: /
+
+#     Variante adicional
+User-agent: Claude-Web
+Disallow: /
+
+#      Motor de búsqueda IA
 User-agent: Google-Extended
 Disallow: /
 
+#      base de datos de muchos LLMs
+User-agent: CCBot
+Disallow: /
+
+#      Entrenamiento de modelos AWS/Alexa
+User-agent: Amazonbot
+Disallow: /
+
+#      Base de datos de LLMs chinos
+User-agent: Bytespider
+Disallow: /
+
+#      Entrenamiento de modelos de Apple
+User-agent: Applebot-Extended
+Disallow: /
+
+#      Motor de búsqueda IA
+User-agent: PerplexityBot
+Disallow: /
+
+#      Motor de búsqueda IA
+User-agent: YouBot
+Disallow: /
+
+#      Extracción masiva de datos estructurados
+User-agent: Diffbot
+Disallow: /
+
+#      Scraping para modelos Meta/LLaMA
+User-agent: FacebookBot
+Disallow: /
+
+#      Vende datos a empresas de IA
+User-agent: omgili
+Disallow: /
+
+#      Vende datos a empresas de IA
+User-agent: omgilibot
+Disallow: /
+
+# --- Scrapers de datos / SEO agresivos ---
+
+#      Vende datos de contenido web a terceros
+User-agent: DataForSeoBot
+Disallow: /
+
+#      Huawei, scraping masivo sin mucho respeto al robots.txt
+User-agent: PetalBot
+Disallow: /
+
+#      Análisis SEO, recoge textos de páginas
+User-agent: SemrushBot
+Disallow: /
+
+#      Análisis SEO, recoge textos de páginas,  muy agresivo con el rastreo
+User-agent: AhrefsBot
+Disallow: /
+
+#      Majestic SEO, indexación masiva
+User-agent: MJ12bot
+Disallow: /
+
+#      OpenLinkProfiler/Moz, indexación masiva
+User-agent: DotBot
+Disallow: /
+
+#      Agregador de contenido
+User-agent: BLEXBot
+Disallow: /
+
+# --- Motores con escaso respeto al RGPD ---
+
+#      Motor chino, no suele respetar políticas RGPD
+User-agent: Baiduspider
+Disallow: /
+
+#      Motor ruso, no suele respetar políticas RGPD
+User-agent: YandexBot
+Disallow: /
+
+#      Motor chino, no suele respetar políticas RGPD
+User-agent: Sogou
+Disallow: /
