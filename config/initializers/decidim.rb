@@ -77,4 +77,4 @@ Decidim.configure do |config|
       url: "https://photon.komoot.io/api/"
     }
   }
- }
+ end
