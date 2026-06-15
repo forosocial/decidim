@@ -54,6 +54,14 @@ Decidim.configure do |config|
   # Tiempo disponible para descarga de datos
   config.download_your_data_expiry_time = 7.days
   
+  # CSP: añadir dominios de OpenStreetMap a la política de seguridad de contenido
+  # Decidim genera su propia CSP desde decidim/content_security_policy.rb
+  # La forma correcta de extenderla es mediante content_security_policies_extra
+  config.content_security_policies_extra = {
+    "img-src" => %w(https://tile.openstreetmap.org https://*.tile.openstreetmap.org),
+    "connect-src" => %w(https://nominatim.openstreetmap.org https://photon.komoot.io)
+  }
+  
   # Configuración de mapas con OpenStreetMap
   # Tiles: tile.openstreetmap.org (raster PNG, compatible con Leaflet)
   # Geocodificación: Nominatim (OSM)
