@@ -1,3 +1,4 @@
+cat config/initializers/decidim.rb 
 # frozen_string_literal: true
 
 Decidim.configure do |config|
@@ -77,4 +78,3 @@ Decidim.configure do |config|
     }
   }
   
-end
