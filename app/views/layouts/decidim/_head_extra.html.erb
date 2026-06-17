@@ -1,0 +1,6 @@
+<%#
+  Tracking de Umami Analytics.
+  El ID del sitio web se lee de la variable de entorno UMAMI_WEBSITE_ID
+  definida en ~/.rbenv-vars del servidor de producción.
+%>
+<script defer src="https://decidim.forosocial.org/umami/script.js" data-website-id="<%= ENV['UMAMI_WEBSITE_ID'] %>"></script>
