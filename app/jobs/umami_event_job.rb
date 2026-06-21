@@ -12,9 +12,13 @@
 #
 # Documentación de la API: https://docs.umami.is/docs/api/sending-stats
 #
+# IMPORTANTE: Umami usa la librería "isbot" para descartar peticiones de bots,
+# devolviendo un falso 200 OK con {"beep":"boop"} sin guardar el evento.
+# El User-Agent NO debe contener palabras como "bot", "crawler", "spider" o
+# "tracker" (incluso en "Decidim-Umami-Tracker" se detectaba como bot).
+#
 # Uso:
 #   UmamiEventJob.perform_later("comentario_creado", { tipo: "Pacto", commentable_id: 15 }, "/processes/acuerdoecosocial")
-
 class UmamiEventJob < ApplicationJob
   queue_as :default
 
@@ -25,8 +29,8 @@ class UmamiEventJob < ApplicationJob
 
     request = Net::HTTP::Post.new(uri)
     request["Content-Type"] = "application/json"
-    # Umami descarta silenciosamente las peticiones sin User-Agent válido.
-    request["User-Agent"] = "Decidim-Umami-Tracker/1.0"
+    # User-Agent neutro, sin palabras que disparen la detección de bots de Umami (isbot).
+    request["User-Agent"] = "Decidim/0.31.4 (+https://decidim.forosocial.org)"
     request.body = {
       type: "event",
       payload: {
@@ -38,10 +42,8 @@ class UmamiEventJob < ApplicationJob
     }.to_json
 
     response = http.request(request)
-    Rails.logger.info("Umami event sent: #{event_name} - #{response.code}")
+    Rails.logger.info("Umami event sent: #{event_name} - #{response.code} - #{response.body}")
   rescue StandardError => e
-    # No queremos que un fallo de Umami afecte al flujo normal de Decidim,
-    # así que solo lo registramos en el log.
     Rails.logger.warn("Umami tracking failed: #{e.message}")
   end
 end
