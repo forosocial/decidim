@@ -14,8 +14,12 @@
 #
 # IMPORTANTE: Umami usa la librería "isbot" para descartar peticiones de bots,
 # devolviendo un falso 200 OK con {"beep":"boop"} sin guardar el evento.
-# El User-Agent NO debe contener palabras como "bot", "crawler", "spider" o
-# "tracker" (incluso en "Decidim-Umami-Tracker" se detectaba como bot).
+# Cualquier User-Agent que incluya patrones como "Nombre/Version", la palabra
+# "compatible", o una URL en formato "+https://..." es detectado como bot,
+# incluyendo nuestros propios intentos como "Decidim/0.31.4" o
+# "Mozilla/5.0 (compatible; Decidim/0.31.4; +https://...)".
+# La única forma fiable de evitar el falso bloqueo es usar un User-Agent
+# de navegador real y genérico, sin identificadores propios.
 #
 # Uso:
 #   UmamiEventJob.perform_later("comentario_creado", { tipo: "Pacto", commentable_id: 15 }, "/processes/acuerdoecosocial")
@@ -29,8 +33,8 @@ class UmamiEventJob < ApplicationJob
 
     request = Net::HTTP::Post.new(uri)
     request["Content-Type"] = "application/json"
-    # User-Agent neutro, sin palabras que disparen la detección de bots de Umami (isbot).
-    request["User-Agent"] = "Decidim/0.31.4 (+https://decidim.forosocial.org)"
+    # User-Agent de navegador genérico para evitar el falso bloqueo de isbot en Umami.
+    request["User-Agent"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     request.body = {
       type: "event",
       payload: {
