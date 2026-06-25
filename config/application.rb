@@ -32,5 +32,11 @@ module FsmacDecidim
 
     # Añadido por pepeherr
     config.active_job.queue_adapter = :sidekiq
+    
+    config.to_prepare do
+      Dir.glob(Rails.root.join("app/decorators/**/*_decorator.rb")).sort.each do |decorator|
+        load decorator
+      end
+    end
   end
 end
