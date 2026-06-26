@@ -971,6 +971,7 @@ DEPENDENCIES
   net-pop (~> 0.1.1)
   puma (>= 6.3.1)
   redis
+  rspec-rails
   sidekiq
   web-console (~> 4.2)
 

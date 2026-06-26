@@ -26,9 +26,11 @@ gem "puma", ">= 6.3.1"
 gem "sidekiq"
 gem "redis"
 
+gem "exception_notification"
+
 group :development, :test do
   gem "byebug", "~> 11.0", platform: :mri
-
+  gem "rspec-rails"
   gem "brakeman", "~> 7.0"
   gem "decidim-dev", "0.31.4"
   gem "net-imap", "~> 0.5.0"
@@ -46,6 +48,4 @@ group :development do
   gem "capistrano-bundler"
 end
 
-group :production do
-  gem "exception_notification"
-end
+
