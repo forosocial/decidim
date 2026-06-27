@@ -86,6 +86,20 @@ end
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
+  config.cache_store = :redis_cache_store, {
+    url: ENV.fetch("REDIS_CACHE_URL", "redis://127.0.0.1:6379/1"),
+    namespace: "fsmac_decidim_cache",
+    connect_timeout: 1,    # segundos para intentar conectar
+    read_timeout: 0.5,
+    write_timeout: 0.5,
+    reconnect_attempts: 1,
+    error_handler: ->(method:, returning:, exception:) {
+        Rails.logger.warn(
+            "[RedisCacheStore] Error en #{method}: #{exception.class} #{exception.message}. " \
+            "Devolviendo #{returning.inspect}"
+        )
+    }
+  }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter = :resque
