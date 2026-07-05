@@ -21,6 +21,21 @@ require "digest"
 #        bundle exec ruby -e "require 'digest'; puts Digest::MD5.hexdigest(
 #          File.read(File.join(Gem::Specification.find_by_name('GEM').gem_dir, 'RUTA'))
 #        )"
+#   Ejemplo:
+#        bundle exec ruby -e "require 'digest'; puts Digest::MD5.hexdigest(
+#          File.read(File.join(Gem::Specification.find_by_name('decidim-core').gem_dir, 'app/cells/decidim/activity_cell.rb'))
+#        )"
+
+# Tras añadir una nueva entrada a este spec es necesario probarlo
+# RAILS_ENV=test bundle exec rspec spec/lib/overrides_spec.rb
+
+#########
+#     USO
+#########
+# Tras realizar una actualización de Decidim ejecutar:
+#      bundle exec rspec spec/lib/overrides_spec.rb
+#
+
 OVERRIDES = {
   "decidim-core" => {
     # Override: config/initializers/amendments_helper_override.rb
@@ -30,8 +45,25 @@ OVERRIDES = {
     # decidim_amendments_form_field_for (alias que crea Awesome del original
     # de core) para que el fix tenga efecto cuando Awesome no tiene custom
     # fields configurados.
-    "app/helpers/decidim/amendments_helper.rb" => "db42be326ff225c422e2c126d784b477"
+    "app/helpers/decidim/amendments_helper.rb" => "db42be326ff225c422e2c126d784b477",
+    
+    # Override: config/initializers/activity_cell_cache_override.rb
+    # Motivo: cache_hash no incluye ningún componente temporal, por lo que
+    # el string "Hace X minutos/horas" queda congelado en caché desde el
+    # primer render. El override añade un bucket horario para forzar
+    # expiración cada 60 minutos como máximo.
+    # ActivityCell hereda cache_expiry_time global (24h) pero renderiza
+    # tiempo relativo ("Hace X minutos") que queda congelado en caché. El override
+    # añade un bucket horario a cache_hash para forzar expiración cada 60 minutos.
+    # El problema es que en los listados de actividad no aparece correctamente el tiempo
+    # que hace desde la ejecución de la actividad.
+    # Para que surta efecto tras la implementación de este override ha sido necesario
+    # Limpiar caché de Redis para que los registros se rerenderizen ya
+    # RAILS_ENV=production bundle exec rails runner "Rails.cache.clear"
+    #
+    "app/cells/decidim/activity_cell.rb" => "e2345598669f6312f17ee964950a83bc"
   },
+  
   "decidim-decidim_awesome" => {
     # Override: config/initializers/amendments_helper_override.rb
     # Si Awesome cambia su AmendmentsHelperOverride hay que revisar si
@@ -39,6 +71,7 @@ OVERRIDES = {
     # correcto donde aplicar el fix.
     "app/helpers/concerns/decidim/decidim_awesome/amendments_helper_override.rb" => "875761b6e8e7d7b45bbdd339609f4fd9"
   },
+  
   "decidim-proposals" => {
     # Override: config/initializers/proposals_default_states_override.rb
     # Motivo: ProposalsController#default_states marca por defecto en el

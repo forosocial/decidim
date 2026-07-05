@@ -1169,6 +1169,167 @@ cd ~/fsmac_decidim
 git remote add origin git@github.com:forosocial/decidim.git
 git push -u origin main
 ```
+### Creación de un usuario 'operador' con permisos restringidos
+Creamos un usuario sin privilegios con acceso SSH por clave pública, y usando sudoers le asignamos una lista blanca explícita de comandos permitidos. Sin contraseña de sudo, sin acceso a ficheros de la aplicación.
+Realizamos las siguientes operación para su creación:
+```bash
+sudo adduser --disabled-password --gecos "Operador VPS" operador
+sudo mkdir -p /home/operador/.ssh
+sudo chmod 700 /home/operador/.ssh
+```
+inicialmente incluimos la clave pública del usuario decidim y le asignamos permisos y usuario correctos, después podemos añadir la de otros usuarios que puedan tener este rol:
+```bash
+sudo cp /home/decidim/.ssh/authorized_keys /home/operador/.ssh
+sudo chmod 600 /home/operador/.ssh/authorized_keys
+sudo chown -R operador:operador /home/operador/.ssh
+```
+Creamos el archivo `/etc/sudoers.d/operador`donde definiremos la lista blanca de gestiones que puede realizar `operador`:
+```bash
+
+```
+El contenido es:
+```bash
+# Servicios que puede gestionar (reiniciar, parar, arrancar, ver estado)
+Cmnd_Alias SERVICIOS = \
+    /usr/bin/systemctl restart nginx, \
+    /usr/bin/systemctl reload nginx, \
+    /usr/bin/systemctl start nginx, \
+    /usr/bin/systemctl status nginx, \
+    /usr/bin/systemctl restart decidim, \
+    /usr/bin/systemctl reload decidim, \
+    /usr/bin/systemctl start decidim, \
+    /usr/bin/systemctl status decidim, \
+    /usr/bin/systemctl restart sidekiq, \
+    /usr/bin/systemctl start sidekiq, \
+    /usr/bin/systemctl status sidekiq, \
+    /usr/bin/systemctl restart redis-server, \
+    /usr/bin/systemctl status redis-server, \
+    /usr/bin/systemctl status postgresql, \
+    /usr/bin/systemctl restart postgresql
+
+# Actualizaciones del sistema
+Cmnd_Alias ACTUALIZACIONES = \
+    /usr/bin/apt update, \
+    /usr/bin/apt list --upgradable, \
+    /usr/bin/apt upgrade, \
+    /usr/bin/apt upgrade -y, \
+    /usr/bin/apt install --only-upgrade -y *, \
+    /usr/bin/apt autoremove -y
+
+# Logs del sistema
+Cmnd_Alias LOGS = \
+    /usr/bin/journalctl
+
+# Conceder sin contraseña
+operador ALL=(ALL) NOPASSWD: SERVICIOS, ACTUALIZACIONES, LOGS
+
+Para facilitar la gestión por el usuario 'operador' creamos los siguientes alias en su `/home/operador/.bash_aliases`:
+```bash
+# ── Servicios ──────────────────────────────────────────────
+alias decidim-restart='sudo systemctl restart decidim'
+alias decidim_reload='sudo systemctl reload decidim'
+alias decidim-start='sudo systemctl start decidim'
+alias decidim-status='sudo systemctl status decidim'
+
+alias sidekiq-start='sudo systemctl start sidekiq'
+alias sidekiq-restart='sudo systemctl restart sidekiq'
+alias sidekiq-status='sudo systemctl status sidekiq'
+
+alias nginx-restart='sudo systemctl restart nginx'
+alias nginx-reload='sudo systemctl reload nginx'
+alias nginx-reload='sudo systemctl reload nginx'
+alias nginx-status='sudo systemctl status nginx'
+
+alias redis-status='sudo systemctl status redis-server'
+alias redis-restart='sudo systemctl restart redis-server'
+
+alias pg-status='sudo systemctl status postgresql'
+alias pg-restart='sudo systemctl restart postgresql'
+
+# Estado de todos los servicios de un vistazo
+alias servicios='source /etc/profile.d/operador-bienvenida.sh'
+
+# ── Logs ───────────────────────────────────────────────────
+alias logs-decidim='sudo journalctl -u decidim -n 50 -f'
+alias logs-sidekiq='sudo journalctl -u sidekiq -n 50 -f'
+alias logs-nginx='sudo journalctl -u nginx -n 50 -f'
+alias logs-errores='sudo journalctl -p err -n 50'
+
+# ── Sistema ────────────────────────────────────────────────
+alias que-actualizar='sudo apt update > /dev/null 2>&1 && sudo apt list --upgradable'
+
+actualiza-paquete() {
+    if [ -z "$1" ]; then
+        echo "Uso: actualiza-paquete <nombre-del-paquete>"
+        echo "Ejemplo: actualiza-paquete ruby"
+        return 1
+    fi
+
+    echo "Actualizando paquete: $1"
+    sudo apt update > /dev/null 2>&1
+    sudo apt install --only-upgrade -y "$1" && sudo apt autoremove -y
+}
+
+alias espacio='df -h /'
+alias memoria='free -h'
+
+```
+
+Como deseamos que al conectarse el usuario 'operador' tenga información de lo que puede ejecutar queremos mostrar una ayuda tras la conexión, para lo que creamos el archivo`/etc/profile.d/operador-bienvenida.sh`con el siguiente contenido:
+```bash
+# Solo mostrar al usuario "operador"
+# Solo mostrar al usuario "operador"
+if [ "$USER" != "operador" ]; then return; fi
+
+# Colores
+BOLD="\033[1m"; CYAN="\033[1;36m"; GREEN="\033[1;32m"
+YELLOW="\033[1;33m"; RESET="\033[0m"
+
+echo ""
+echo -e "${CYAN}╔══════════════════════════════════════════════════════╗${RESET}"
+echo -e "${CYAN}║       Servidor Decidim — Foro Social                 ║${RESET}"
+echo -e "${CYAN}╚══════════════════════════════════════════════════════╝${RESET}"
+echo ""
+echo -e "${BOLD}Estado actual de servicios:${RESET}"
+for s in decidim sidekiq nginx redis-server postgresql; do
+    STATUS=$(systemctl is-active "$s" 2>/dev/null)
+    if [ "$STATUS" = "active" ]; then
+        ICON="${GREEN}●${RESET}"
+    else
+        ICON="${YELLOW}●${RESET}"
+    fi
+    printf "  %b  %-20s %s\n" "$ICON" "$s" "$STATUS"
+done
+
+echo ""
+echo -e "${BOLD}Comandos disponibles:${RESET}"
+echo ""
+echo -e "  ${CYAN}SERVICIOS${RESET}"
+echo "  decidim-status   decidim-reload   decidim-restart      decidim-start"
+echo "  nginx-status     nginx-reload     nginx-restart        nginx-start"
+echo "  sidekiq-status                    sidekiq-restart      sidekiq-start"
+echo "  redis-status                      redis-restart"
+echo "  pg-status                         pg-restart"
+echo ""
+echo "  servicios                → estado de todos de un vistazo"
+echo ""
+echo -e "  ${CYAN}LOGS  (Ctrl+C para salir)${RESET}"
+echo "  logs-decidim / logs-sidekiq / logs-nginx / logs-errores"
+echo ""
+echo -e "  ${CYAN}SISTEMA${RESET}"
+echo "  que-actualizar           → apt update + list --upgradable"
+echo "  actualiza <paquete>      → apt install --only-upgrade -y \$1 && sudo apt autoremove -y"
+echo ""
+echo "  espacio                  → espacio en disco"
+echo "  memoria                  → espacio memoria RAM y Swap"
+echo ""
+
+```
+y lo hacemos ejecutable:
+```bash
+sudo chmod +x /etc/profile.d/operador-bienvenida.sh
+```
+
 ### Parches y personalizaciones en la instancia de Decidim
 ### Seguridad en los parches
 Para asegurar que las sobre escrituras del código original de Decidim no tenga afección a nuevas versiones de Decidim se han seguido las  [instrucciones de comprobación](https://docs.decidim.org/en/develop/develop/testing.html)existentes en la documentación de Decidim y en base al[script de Som Energía](https://github.com/Som-Energia/decidim-som-energia-app/blob/main/spec/lib/overrides_spec.rb) 
