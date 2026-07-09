@@ -51,3 +51,4 @@
 
 # Ignore Tailwind configuration
 tailwind.config.js
+app/views/static/api/docs/
