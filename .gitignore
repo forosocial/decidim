@@ -48,7 +48,9 @@
 # Ignore node modules
 /node_modules
 
-
 # Ignore Tailwind configuration
 tailwind.config.js
 app/views/static/api/docs/
+
+# Archivos de VS Code (configuraciones personales)
+.vscode/

@@ -23,18 +23,19 @@ gem "bootsnap", "~> 1.3"
 gem "puma", ">= 6.3.1"
 
 # Tareas asincronas
-gem "sidekiq"
 gem "redis"
+gem "sidekiq"
+
 
 gem "exception_notification"
 
 group :development, :test do
-  gem "byebug", "~> 11.0", platform: :mri
-  gem "rspec-rails"
   gem "brakeman", "~> 7.0"
+  gem "byebug", "~> 11.0", platform: :mri
   gem "decidim-dev", "0.31.4"
   gem "net-imap", "~> 0.5.0"
   gem "net-pop", "~> 0.1.1"
+  gem "rspec-rails"
 end
 
 group :development do
@@ -43,9 +44,10 @@ group :development do
   gem "web-console", "~> 4.2"
 
   gem "capistrano", "~> 3.19"
+  gem "capistrano-bundler"
   gem "capistrano-rails"
   gem "capistrano-rbenv"
-  gem "capistrano-bundler"
+
+  gem "erb_lint" 
+  gem "solargraph"
 end
-
-
