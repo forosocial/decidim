@@ -12,7 +12,9 @@
 # como máximo cada 60 minutos.
 #
 # Fichero upstream vigilado en overrides_spec.rb:
-#   decidim-core · app/cells/decidim/activity_cell.rb · e6b155a66d2be04f96c96d52bc72d6f7
+#   decidim-core · app/cells/decidim/activity_cell.rb · e2345598669f6312f17ee964950a83bc
+#
+# Reportado issue: https://github.com/decidim/decidim/issues/17257 
 
 Rails.application.config.after_initialize do
   Decidim::ActivityCell.prepend(Module.new do
