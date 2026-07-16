@@ -46,7 +46,26 @@ OVERRIDES = {
     # de core) para que el fix tenga efecto cuando Awesome no tiene custom
     # fields configurados.
     "app/helpers/decidim/amendments_helper.rb" => "db42be326ff225c422e2c126d784b477",
-    
+
+    # Override: config/initializers/amendable_force_es_locale_override.rb
+    # Motivo: Decidim::Amendable::{CreateDraft,UpdateDraft,Accept} usan
+    # I18n.locale (el idioma de interfaz activo) como clave del hash de
+    # title/body, en vez del idioma real en el que está escrito el contenido.
+    # Además, la asignación original SUSTITUYE el hash completo en vez de
+    # fusionarlo, perdiendo las traducciones a otros idiomas ya existentes.
+    # Como actualmente todas las "proposals" de Foro Social están redactadas
+    # únicamente en castellano y no hay capacidad de traducción a los otros
+    # idiomas configurados (ca, eu, gl, en), forzamos 'es' como idioma de
+    # las enmiendas en los tres pasos de su ciclo de vida, usando merge para
+    # no destruir ninguna traducción que pudiera existir.
+    # Cuando haya traducciones reales disponibles para algún idioma, revisar
+    # si este override sigue siendo necesario o hay que sustituirlo por una
+    # detección más fina (idioma real del contenido en vez de 'es' fijo).
+    #
+    "app/commands/decidim/amendable/create_draft.rb" => "6dab877c9ad517bce2474d45cb68b339",
+    "app/commands/decidim/amendable/update_draft.rb" => "b1aa9bbc241174f4d3e0b64acb376b50",
+    "app/commands/decidim/amendable/accept.rb" => "8b72f8a77140573a89724b33db4840b4",
+
     # Override: config/initializers/activity_cell_cache_override.rb
     # Motivo: cache_hash no incluye ningún componente temporal, por lo que
     # el string "Hace X minutos/horas" queda congelado en caché desde el
@@ -63,7 +82,7 @@ OVERRIDES = {
     #
     "app/cells/decidim/activity_cell.rb" => "e2345598669f6312f17ee964950a83bc"
   },
-  
+
   "decidim-decidim_awesome" => {
     # Override: config/initializers/amendments_helper_override.rb
     # Si Awesome cambia su AmendmentsHelperOverride hay que revisar si
@@ -88,10 +107,12 @@ RSpec.describe "Decidim overrides" do
   OVERRIDES.each do |gem_name, files|
     context "gem: #{gem_name}" do
       let(:gem_dir) { Gem::Specification.find_by_name(gem_name).gem_dir }
+
       files.each do |relative_path, expected_checksum|
         describe relative_path do
           let(:full_path) { File.join(gem_dir, relative_path) }
           let(:current_checksum) { Digest::MD5.hexdigest(File.read(full_path)) }
+
           it "has not changed since the override was written" do
             expect(current_checksum).to eq(expected_checksum), <<~MSG
               El fichero upstream ha cambiado en #{gem_name}:

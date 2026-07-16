@@ -1073,56 +1073,8 @@ Ya en la fase inicial y siguiento el [Manual Installation tutorial](https://docs
 #### .gitignore
 En nuestro `.gitignore`tienen que estar incluidos como mínimo los archivos sensibles o que no necesitamos en el repositorio.
 Como `.rbenv-vars` está fuera del directorio de la aplicación no es necesario incluirlo.
-Su contenido es el siguiente:
+Su contenido es el siguiente: [.gitignore](https://github.com/forosocial/decidim/blob/main/.gitignore)
 
-	```
-	# Ignore bundler config.
-		/.bundle
-
-		# Ignore all environment files (except templates).
-		/.env*
-		!/.env*.erb
-
-		# Ignore all logfiles and tempfiles.
-		/log/*
-		/tmp/*
-		!/log/.keep
-		!/tmp/.keep
-
-		# Ignore pidfiles, but keep the directory.
-		/tmp/pids/*
-		!/tmp/pids/
-		!/tmp/pids/.keep
-
-		# Ignore storage (uploaded files in development and any SQLite databases).
-		/storage/*
-		!/storage/.keep
-		/tmp/storage/*
-		!/tmp/storage/
-		!/tmp/storage/.keep
-
-		/public/uploads
-		/public/assets
-
-		# Ignore master key for decrypting credentials and more.
-		/config/master.key
-
-		# Ignore env configuration files
-		.env
-		.envrc
-		.rbenv-vars
-
-		# Ignore the files and folders generated through Webpack
-		/public/decidim-packs
-		/public/packs-test
-		/public/sw.js*
-
-		# Ignore node modules
-		/node_modules
-
-		# Ignore Tailwind configuration
-		tailwind.config.js
-	```
 #### Primer commit
 
 Ejecutamos:
@@ -1170,7 +1122,8 @@ git remote add origin git@github.com:forosocial/decidim.git
 git push -u origin main
 ```
 ### Creación de un usuario 'operador' con permisos restringidos
-Creamos un usuario sin privilegios con acceso SSH por clave pública, y usando sudoers le asignamos una lista blanca explícita de comandos permitidos. Sin contraseña de sudo, sin acceso a ficheros de la aplicación.
+
+Creamos un usuario con privilegios necesarios específicos y con acceso SSH por clave pública. Uando sudoers le asignamos una lista blanca explícita de comandos permitidos. Sin contraseña de sudo, sin acceso a ficheros de la aplicación.
 Realizamos las siguientes operación para su creación:
 ```bash
 sudo adduser --disabled-password --gecos "Operador VPS" operador
@@ -1205,7 +1158,8 @@ Cmnd_Alias SERVICIOS = \
     /usr/bin/systemctl restart redis-server, \
     /usr/bin/systemctl status redis-server, \
     /usr/bin/systemctl status postgresql, \
-    /usr/bin/systemctl restart postgresql
+    /usr/bin/systemctl restart postgresql, \
+	
 
 # Actualizaciones del sistema
 Cmnd_Alias ACTUALIZACIONES = \
@@ -1227,7 +1181,6 @@ Para facilitar la gestión por el usuario 'operador' creamos los siguientes alia
 ```bash
 # ── Servicios ──────────────────────────────────────────────
 alias decidim-restart='sudo systemctl restart decidim'
-alias decidim_reload='sudo systemctl reload decidim'
 alias decidim-start='sudo systemctl start decidim'
 alias decidim-status='sudo systemctl status decidim'
 
@@ -1247,7 +1200,7 @@ alias pg-status='sudo systemctl status postgresql'
 alias pg-restart='sudo systemctl restart postgresql'
 
 # Estado de todos los servicios de un vistazo
-alias servicios='source /etc/profile.d/operador-bienvenida.sh'
+alias info='source /etc/profile.d/operador-bienvenida.sh'
 
 # ── Logs ───────────────────────────────────────────────────
 alias logs-decidim='sudo journalctl -u decidim -n 50 -f'
@@ -1277,13 +1230,13 @@ alias memoria='free -h'
 
 Como deseamos que al conectarse el usuario 'operador' tenga información de lo que puede ejecutar queremos mostrar una ayuda tras la conexión, para lo que creamos el archivo`/etc/profile.d/operador-bienvenida.sh`con el siguiente contenido:
 ```bash
-# Solo mostrar al usuario "operador"
+cat /etc/profile.d/operador-bienvenida.sh
 # Solo mostrar al usuario "operador"
 if [ "$USER" != "operador" ]; then return; fi
 
 # Colores
-BOLD="\033[1m"; CYAN="\033[1;36m"; GREEN="\033[1;32m"
-YELLOW="\033[1;33m"; RESET="\033[0m"
+BOLD="\033[1m"; CYAN="\033[1;36m"; GREEN="\033[1;32;5m"
+YELLOW="\033[31;6m"; RESET="\033[0m"
 
 echo ""
 echo -e "${CYAN}╔══════════════════════════════════════════════════════╗${RESET}"
@@ -1301,17 +1254,89 @@ for s in decidim sidekiq nginx redis-server postgresql; do
     printf "  %b  %-20s %s\n" "$ICON" "$s" "$STATUS"
 done
 
+#decidim status
+STATUS=$(systemctl is-active decidim 2>/dev/null)
+    if [ "$STATUS" = "active" ]; then
+        ICON_DECIDIM="${GREEN}●${RESET}"
+    else
+        ICON_DECIDIM="${YELLOW}●${RESET}"
+    fi
+
+#nginx status
+STATUS=$(systemctl is-active nginx 2>/dev/null)
+    if [ "$STATUS" = "active" ]; then
+        ICON_NGINX="${GREEN}●${RESET}"
+    else
+        ICON_NGINX="${YELLOW}●${RESET}"
+    fi
+
+#redis status
+STATUS=$(systemctl is-active redis-server 2>/dev/null)
+    if [ "$STATUS" = "active" ]; then
+        ICON_REDIS="${GREEN}●${RESET}"
+    else
+        ICON_REDIS="${YELLOW}●${RESET}"
+    fi
+
+#sidekiq status
+STATUS=$(systemctl is-active sidekiq 2>/dev/null)
+    if [ "$STATUS" = "active" ]; then
+        ICON_SIDEKIQ="${GREEN}●${RESET}"
+    else
+        ICON_SIDEKIQ="${YELLOW}●${RESET}"
+    fi
+
+#pstgresql status
+STATUS=$(systemctl is-active postgresql 2>/dev/null)
+    if [ "$STATUS" = "active" ]; then
+        ICON_PG="${GREEN}●${RESET}"
+    else
+        ICON_PG="${YELLOW}●${RESET}"
+    fi
+echo""
+echo -e "${BOLD}Flujo de servicios:${RESET}"
+
+
+echo "                    USUARIO"
+echo "                       │"
+echo "                       ▼"
+echo -e "                    NGINX $ICON_NGINX"
+echo "                       │"
+echo "                       ▼"
+echo -e "                     PUMA $ICON_DECIDIM"
+echo "                       │"
+echo "                       ▼"
+echo "                     RAILS ←───────────────┐"
+echo "                       │                   │"
+echo "          ┌────────────┼────────────┐      │"
+echo "          │            │            │      │"
+echo "          ▼            ▼            ▼      │"
+echo -e "      PostgreSQL $ICON_PG  REDIS $ICON_REDIS      REDIS $ICON_REDIS   │"
+echo "       (datos)     (CACHÉ)      (JOBS)     │"
+echo "          ▲            ▲            │      │"
+echo "          │            │            ▼      │"
+echo -e "          │            │        SIDEKIQ $ICON_SIDEKIQ  │"
+echo "          │            │            │      │"
+echo "          │            │            ▼      │"
+echo "          │            │       RAILS (worker)"
+echo "          │            │            │      │"
+echo "          └────────────┼────────────┘      │"
+echo "                       │                   │"
+echo "                       └───────────────────┘"
+echo "                       │"
+echo "                       ▼"
+echo "                 USUARIO (respuesta)"
 echo ""
 echo -e "${BOLD}Comandos disponibles:${RESET}"
 echo ""
 echo -e "  ${CYAN}SERVICIOS${RESET}"
-echo "  decidim-status   decidim-reload   decidim-restart      decidim-start"
+echo "  decidim-status                    decidim-restart      decidim-start"
 echo "  nginx-status     nginx-reload     nginx-restart        nginx-start"
 echo "  sidekiq-status                    sidekiq-restart      sidekiq-start"
 echo "  redis-status                      redis-restart"
 echo "  pg-status                         pg-restart"
 echo ""
-echo "  servicios                → estado de todos de un vistazo"
+echo "  info                     → estado de todos de un vistazo"
 echo ""
 echo -e "  ${CYAN}LOGS  (Ctrl+C para salir)${RESET}"
 echo "  logs-decidim / logs-sidekiq / logs-nginx / logs-errores"
@@ -1356,5 +1381,7 @@ Que nos avisará si alguno de los archivos de decidim han cambiado a una nueva v
 Debido a que decidim establece como filtro por defecto el Estado "Evaluating" las enmiendas se muestran en Pactos y Conflictos.
 Se han realizado las siguientes modificación para excluir "Evaluating del filtro por defecto:
 - Creación de [config/initializers/proposals_default_states_override.rb](https://github.com/forosocial/decidim/blob/main/config/initializers/proposals_default_states_override.rb)
+
+#### Disminuir caché para 
 
 
