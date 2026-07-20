@@ -80,7 +80,29 @@ OVERRIDES = {
     # Limpiar caché de Redis para que los registros se rerenderizen ya
     # RAILS_ENV=production bundle exec rails runner "Rails.cache.clear"
     #
-    "app/cells/decidim/activity_cell.rb" => "e2345598669f6312f17ee964950a83bc"
+    "app/cells/decidim/activity_cell.rb" => "e2345598669f6312f17ee964950a83bc",
+
+    # Override: config/initializers/amendments_controller_accept_without_merge.rb
+    # Motivo: se añade una acción alternativa "aceptar sin fusionar" para el
+    # caso de enmiendas en conflicto sobre el mismo texto (dos coautores
+    # enmendando la misma propuesta): permite marcar una enmienda como
+    # aceptada (state, notificaciones) sin ejecutar update_amendable!, para
+    # que el administrador incorpore el cambio a mano sin sobrescribir lo ya
+    # fusionado por otra enmienda aceptada previamente. El override usa
+    # Module#prepend sobre la acción #accept, distinguiendo por el parámetro
+    # skip_merge. Si Decidim cambia la firma o lógica de esta acción
+    # (por ejemplo, el nombre del form o el comando invocado), hay que
+    # revisar el prepend y el nuevo comando AcceptWithoutMerge.
+    "app/controllers/decidim/amendments_controller.rb" => "4cc807fab4dab816bbf67730178a2e36",
+
+    # Override: app/views/decidim/amendments/review.html.erb (copia local,
+    # no prepend — Rails prioriza la vista de la app sobre la del gem)
+    # Motivo: se añade un segundo botón "Aceptar sin fusionar (incorporación
+    # manual)" en el formulario de revisión de la enmienda, que envía
+    # skip_merge=1 al mismo accept_amend_path. Si Decidim actualiza esta
+    # vista (nuevos campos, cambios de estilos, etc.), la copia local se
+    # desincroniza silenciosamente y hay que revisar/rehacer el override.
+    "app/views/decidim/amendments/review.html.erb" => "0a653271f8c3b5daeea210c0f597c970"
   },
 
   "decidim-decidim_awesome" => {
