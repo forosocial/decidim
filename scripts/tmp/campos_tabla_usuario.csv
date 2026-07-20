@@ -1,0 +1,66 @@
+name,type,required,default
+id,integer,true,nil
+email,character varying,true,""""""
+encrypted_password,character varying,true,""""""
+reset_password_token,character varying,false,nil
+reset_password_sent_at,timestamp without time zone,false,nil
+remember_created_at,timestamp without time zone,false,nil
+sign_in_count,integer,true,"""0"""
+current_sign_in_at,timestamp without time zone,false,nil
+last_sign_in_at,timestamp without time zone,false,nil
+current_sign_in_ip,character varying,false,nil
+last_sign_in_ip,character varying,false,nil
+created_at,timestamp without time zone,true,nil
+updated_at,timestamp without time zone,true,nil
+invitation_token,character varying,false,nil
+invitation_created_at,timestamp without time zone,false,nil
+invitation_sent_at,timestamp without time zone,false,nil
+invitation_accepted_at,timestamp without time zone,false,nil
+invitation_limit,integer,false,nil
+invited_by_type,character varying,false,nil
+invited_by_id,integer,false,nil
+invitations_count,integer,false,"""0"""
+decidim_organization_id,integer,false,nil
+confirmation_token,character varying,false,nil
+confirmed_at,timestamp without time zone,false,nil
+confirmation_sent_at,timestamp without time zone,false,nil
+unconfirmed_email,character varying,false,nil
+name,character varying,true,nil
+locale,character varying,false,nil
+avatar,character varying,false,nil
+delete_reason,text,false,nil
+deleted_at,timestamp without time zone,false,nil
+admin,boolean,true,"""false"""
+managed,boolean,true,"""false"""
+roles,character varying,false,"""{}"""
+nickname,character varying(20),true,""""""
+personal_url,character varying,false,nil
+about,text,false,nil
+accepted_tos_version,timestamp without time zone,false,nil
+newsletter_token,character varying,false,""""""
+newsletter_notifications_at,timestamp without time zone,false,nil
+type,character varying,true,nil
+extended_data,jsonb,false,"""{}"""
+following_count,integer,true,"""0"""
+followers_count,integer,true,"""0"""
+notification_types,character varying,true,"""all"""
+failed_attempts,integer,true,"""0"""
+unlock_token,character varying,false,nil
+locked_at,timestamp without time zone,false,nil
+session_token,character varying,false,nil
+direct_message_types,character varying,true,"""all"""
+blocked,boolean,true,"""false"""
+blocked_at,timestamp without time zone,false,nil
+block_id,integer,false,nil
+email_on_moderations,boolean,false,"""true"""
+follows_count,integer,true,"""0"""
+notification_settings,jsonb,false,"""{}"""
+notifications_sending_frequency,character varying,false,"""daily"""
+digest_sent_at,timestamp without time zone,false,nil
+password_updated_at,timestamp without time zone,false,nil
+previous_passwords,character varying,false,"""{}"""
+api_key,character varying,false,nil
+officialized_at,timestamp without time zone,false,nil
+officialized_as,jsonb,false,nil
+admin_terms_accepted_at,timestamp without time zone,false,nil
+email_on_assigned_proposals,boolean,false,"""true"""
