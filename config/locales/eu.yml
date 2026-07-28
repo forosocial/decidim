@@ -8,8 +8,8 @@
 # argument" al ver una enmienda rechazada con idioma euskera activo.
 #
 # Bug real de las traducciones oficiales de decidim-core 0.31.4. Rails
-# funde este fichero con el del gem, dando prioridad al nuestro. Revisar
-# si sigue siendo necesario tras actualizar de versión de Decidim.
+# funde este fichero con el del gem, dando prioridad al nuestro.
+# Vigilado por spec/bin/overrides_spec.rb
 #
 # Fichero upstream de referencia:
 #   decidim-core · config/locales/eu.yml

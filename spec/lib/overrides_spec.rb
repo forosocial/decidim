@@ -102,7 +102,31 @@ OVERRIDES = {
     # skip_merge=1 al mismo accept_amend_path. Si Decidim actualiza esta
     # vista (nuevos campos, cambios de estilos, etc.), la copia local se
     # desincroniza silenciosamente y hay que revisar/rehacer el override.
-    "app/views/decidim/amendments/review.html.erb" => "0a653271f8c3b5daeea210c0f597c970"
+    "app/views/decidim/amendments/review.html.erb" => "0a653271f8c3b5daeea210c0f597c970",
+
+    # Override de traducción: config/locales/gl.yml
+    # corrige un error en las cadenas oficiales de
+    # Decidim para decidim.amendments.emendation.announcement (gl).
+    #
+    # Motivo: las cuatro cadenas (accepted, evaluating, rejected, withdrawn)
+    # usan las interpolaciones %{amendable_link} y %{announcement_date}, pero
+    # el código (Decidim::Amendable::AnnouncementCell) construye el hash de
+    # interpolación con las claves %{proposal_link} y %{date}. Al no coincidir
+    # los nombres, I18n lanza "missing interpolation argument" y rompe la
+    # vista de la propuesta para cualquier usuaria con idioma gallego activo
+    # al ver una enmienda (evaluando, aceptada, rechazada o retirada).
+    "config/locales/gl.yml" => "dfce4a7294eb152b1e620c73e23d57fd",
+
+    # Override de traducción: config/locales/eu.yml
+    # corrige un error en la cadena "rejected" de
+    # decidim.amendments.emendation.announcement (eu).
+    #
+    # Motivo: igual que el override de gl.yml (ver ese fichero para más
+    # detalle) pero acotado solo a "rejected", que es la única de las cuatro
+    # cadenas mal escrita en euskera. Usa %{amendable_link}/%{announcement_date}
+    # en vez de %{proposal_link}/%{date}, provocando "missing interpolation
+    # argument" al ver una enmienda rechazada con idioma euskera activo.
+    "config/locales/eu.yml" => "447b0c63fb8e9ccb756aeba7e8ccc282"
   },
 
   "decidim-decidim_awesome" => {

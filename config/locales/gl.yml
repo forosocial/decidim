@@ -14,7 +14,7 @@
 # gem, dando prioridad al nuestro. Revisar si sigue siendo necesario tras
 # actualizar de versión de Decidim (puede que se corrija upstream).
 #
-# Fichero upstream de referencia (no vigilado por overrides_spec.rb al
+# Fichero upstream de referencia (por overrides_spec.rb al
 # ser una traducción, no un override de código):
 #   decidim-core · config/locales/gl.yml
 gl:
