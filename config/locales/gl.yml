@@ -1,0 +1,34 @@
+# Override de traducción: corrige un error en las cadenas oficiales de
+# Decidim para decidim.amendments.emendation.announcement (gl).
+#
+# Motivo: las cuatro cadenas (accepted, evaluating, rejected, withdrawn)
+# usan las interpolaciones %{amendable_link} y %{announcement_date}, pero
+# el código (Decidim::Amendable::AnnouncementCell) construye el hash de
+# interpolación con las claves %{proposal_link} y %{date}. Al no coincidir
+# los nombres, I18n lanza "missing interpolation argument" y rompe la
+# vista de la propuesta para cualquier usuaria con idioma gallego activo
+# al ver una enmienda (evaluando, aceptada, rechazada o retirada).
+#
+# Bug real de las traducciones oficiales de decidim-core 0.31.4, no
+# relacionado con overrides propios. Rails funde este fichero con el del
+# gem, dando prioridad al nuestro. Revisar si sigue siendo necesario tras
+# actualizar de versión de Decidim (puede que se corrija upstream).
+#
+# Fichero upstream de referencia (no vigilado por overrides_spec.rb al
+# ser una traducción, no un override de código):
+#   decidim-core · config/locales/gl.yml
+gl:
+  decidim:
+    amendments:
+      emendation:
+        announcement:
+          accepted: |-
+            Este cambio ao %{amendable_type} %{proposal_link} foi
+            aceptado en <strong>%{date}</strong>.
+          evaluating: |-
+            Esta enquisa para o %{amendable_type} %{proposal_link}
+            está sendo avaliada.
+          rejected: "Esta modificación do %{amendable_type} %{proposal_link}\nfoi rexeitada en <strong>%{date}</strong>."
+          withdrawn: |-
+            Esta autorización foi retirada esta enmenda do %{amendable_type} %{proposal_link}
+            .

@@ -1,0 +1,21 @@
+# Override de traducción: corrige un error en la cadena "rejected" de
+# decidim.amendments.emendation.announcement (eu).
+#
+# Motivo: igual que el override de gl.yml (ver ese fichero para más
+# detalle) pero acotado solo a "rejected", que es la única de las cuatro
+# cadenas mal escrita en euskera. Usa %{amendable_link}/%{announcement_date}
+# en vez de %{proposal_link}/%{date}, provocando "missing interpolation
+# argument" al ver una enmienda rechazada con idioma euskera activo.
+#
+# Bug real de las traducciones oficiales de decidim-core 0.31.4. Rails
+# funde este fichero con el del gem, dando prioridad al nuestro. Revisar
+# si sigue siendo necesario tras actualizar de versión de Decidim.
+#
+# Fichero upstream de referencia:
+#   decidim-core · config/locales/eu.yml
+eu:
+  decidim:
+    amendments:
+      emendation:
+        announcement:
+          rejected: "%{amendable_type} %{proposal_link} en zuzenketa\nukatu da <strong>%{date}</strong>."
