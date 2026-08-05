@@ -5,7 +5,7 @@ Decidim.configure do |config|
   config.application_name = "Foro Social Más Allá del Crecimiento"
 
   # Email del remitente por defecto
-  config.mailer_sender = ENV["SMTP_FROM_EMAIL"]
+  config.mailer_sender = ENV.fetch("SMTP_FROM_EMAIL", nil)
 
   # Locales disponibles
   config.available_locales = [:es, :ca, :eu, :gl, :en]
@@ -19,7 +19,7 @@ Decidim.configure do |config|
   config.maximum_avatar_size = 5
 
   # Número de reportes antes de ocultar contenido
-  # Cuando los usuarios reportan contenido inapropiado (un comentario, una propuesta, etc.), Decidim lleva la cuenta. 
+  # Cuando los usuarios reportan contenido inapropiado (un comentario, una propuesta, etc.), Decidim lleva la cuenta.
   # Con este valor en 3, cuando un mismo contenido recibe 3 reportes se oculta automáticamente de la vista pública
   # y queda pendiente de revisión por los moderadores en el panel de administración.
   # Es una protección automática contra spam o contenido ofensivo sin esperar a que un admin lo revise manualmente.
@@ -29,12 +29,12 @@ Decidim.configure do |config|
   config.default_csv_col_sep = ";"
 
   # Throttling (protección DoS)
-  config.throttling_max_requests = 100
+  config.throttling_max_requests = 30
   config.throttling_period = 1.minute
 
   # Tiempo de acceso sin confirmar email
   # Cuando un usuario se registra, Decidim le envía un email de confirmación.
-  # Esta opción le permite navegar y participar en la plataforma durante X días aunque aún no haya confirmado su email. 
+  # Esta opción le permite navegar y participar en la plataforma durante X días aunque aún no haya confirmado su email.
   # Pasados esos X días sin confirmar, su acceso queda restringido hasta que lo confirme.
   # Lo pongo a 0
   config.unconfirmed_access_for = 0.days
@@ -53,7 +53,7 @@ Decidim.configure do |config|
 
   # Tiempo disponible para descarga de datos
   config.download_your_data_expiry_time = 7.days
-  
+
   # CSP: añadir dominios de OpenStreetMap a la política de seguridad de contenido
   # Decidim genera su propia CSP desde decidim/content_security_policy.rb
   # La forma correcta de extenderla es mediante content_security_policies_extra
@@ -61,7 +61,7 @@ Decidim.configure do |config|
     "img-src" => %w(https://tile.openstreetmap.org https://*.tile.openstreetmap.org),
     "connect-src" => %w(https://nominatim.openstreetmap.org https://photon.komoot.io)
   }
-  
+
   # Configuración de mapas con OpenStreetMap
   # Tiles: tile.openstreetmap.org (raster PNG, compatible con Leaflet)
   # Geocodificación: Nominatim (OSM)
@@ -84,4 +84,4 @@ Decidim.configure do |config|
       url: "https://photon.komoot.io/api/"
     }
   }
- end
+end

@@ -142,7 +142,7 @@ La instalación manual de Decidim no crea un inicializador por defecto, necesita
 ### Active Storage
 
 Por defecto Decidim usa el disco local (`local`), lo que significa que los archivos se guardan en `storage/` del servidor.
-Su configuración se configura en [`~/fsmac_decidim/config/storage.yml`](https://github.com/forosocial/decidim/blob/main/config/storage.yml)
+Su configuración se configura en [`config/storage.yml`](https://github.com/forosocial/decidim/blob/main/config/storage.yml)
 
 Podemos configurar en [config/environments/production.rb](https://github.com/forosocial/decidim/blob/main/config/environments/production.rb)
 que la variable opcional `STORAGE_PROVIDER` está preparada para, cuando se desee definirla en `~/.rbenv-vars`:
