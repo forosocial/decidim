@@ -49,12 +49,11 @@ Rails.application.configure do
   # config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # cambiado por pepeherr a false
-  config.force_ssl = false
+  config.force_ssl = true
   # Añadido para salvar duplicidad de Strict-Transport-Security
   # en curl -I https://decidim.forosocial.org 2>/dev/null | grep -i strict
-  # y mejorar nota de A- a A+ en https://www.ssllabs.com/
-  config.action_dispatch.default_headers.delete('Strict-Transport-Security')
+  # y mejorar de A- a A+ en https://www.ssllabs.com/
+  config.ssl_options = { hsts: false }
 
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
