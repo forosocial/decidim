@@ -530,10 +530,6 @@ Configuramos [public/robots.txt](https://github.com/forosocial/decidim/blob/main
 Sin embargo, `robots.txt` es una declaración de intenciones, no una barrera técnica. Los scrapers maliciosos o los que ignoran deliberadamente el protocolo no lo respetarán. Es necesario complementar con reglas en el servidor (Nginx/fail2ban bloqueando por User-Agent) es más efectivo. 
 
 
-
-
-
-
 #### SSLtest
 
 Verificamos nuestro dominio en [SSL Test](https://www.ssllabs.com/ssltest/)
@@ -544,7 +540,7 @@ El test tarda unos 3 minutos verifica:
 - Cabeceras de seguridad HTTP
 - Vulnerabilidades conocidas
 
-y obtenemos una nota **A- (Acceptable security, some significant issues)** que se considera buena.
+y obtenemos una nota **A+** que se considera el más alto grado de seguridad para una web.
 
 ### Modificación de la configuración de Nginx
 
@@ -582,7 +578,6 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     listen [::]:443 ssl ipv6only=on; # managed by Certbot

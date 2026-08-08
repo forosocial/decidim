@@ -10,7 +10,7 @@ class ActiveStorageImageRescue
     raise unless env["PATH_INFO"].to_s.start_with?("/rails/active_storage/representations/")
 
     Rails.logger.warn "ACTIVE_STORAGE_RESCUE: #{e.message} | Path: #{env["PATH_INFO"]} | IP: #{env["REMOTE_ADDR"]}"
-    [302, { "Location" => "../public/icon.png", "Content-Type" => "text/html" }, []]branc
+    [302, { "Location" => "../public/icon.png", "Content-Type" => "text/html" }, []]
   end
 end
 
