@@ -1,0 +1,24 @@
+es:
+  activerecord:
+    errors:
+      models:
+        decidim/user:
+          attributes:
+            avatar:
+              invalid_image_content: "no es una imagen válida"
+        decidim/user_base_entity:
+          attributes:
+            avatar:
+              invalid_image_content: "no es una imagen válida"
+        decidim/attachment:
+          attributes:
+            file:
+              invalid_image_content: "no es un archivo de imagen válido"
+        decidim/organization:
+          attributes:
+            logo:
+              invalid_image_content: "no es un logo válido"
+            favicon:
+              invalid_image_content: "no es un favicon válido"
+      messages:
+        invalid_image_content: "no es una imagen válida"

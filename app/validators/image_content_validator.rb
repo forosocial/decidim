@@ -10,17 +10,16 @@ class ImageContentValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     return unless value.attached? && value.image?
 
-    value.download do |file|
-      header = file.read(8).to_s.b
-      valid = MAGIC_BYTES.any? { |_, magics| magics.any? { |m| header.start_with?(m.b) } }
+    begin
+      header = value.blob.open { |file| file.read(8) }.to_s.b
 
-      unless valid
-        record.errors.add(attribute, :invalid_image_content)
-        value.purge
+      valid = MAGIC_BYTES.any? do |_, magics|
+        magics.any? { |magic| header.start_with?(magic.b) }
       end
+
+      record.errors.add(attribute, :invalid_image_content) unless valid
+    rescue ActiveStorage::Error, Errno::ENOENT, Errno::EACCES => e
+      Rails.logger.error "ImageContentValidator: Error leyendo #{attribute} para #{record.class}##{record.id}: #{e.message}"
     end
-  rescue StandardError => e
-    Rails.logger.error "ImageContentValidator error: #{e.message}"
-    record.errors.add(attribute, :invalid_image_content)
   end
 end

@@ -19,7 +19,7 @@ Rails.application.config.to_prepare do
     validates :official_img_footer, image_content: true, if: -> { official_img_footer.attached? }
   end
 
-  # Imágenes del editor WYSIWYG (si existe en tu versión de Decidim)
+  # Imágenes del editor WYSIWYG
   if defined?(Decidim::EditorImage)
     Decidim::EditorImage.class_eval do
       validates :file, image_content: true, if: -> { file.attached? }
