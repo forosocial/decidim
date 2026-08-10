@@ -29,7 +29,7 @@ Decidim.configure do |config|
   config.default_csv_col_sep = ";"
 
   # Throttling (protección DoS)
-  config.throttling_max_requests = 30
+  config.throttling_max_requests = 100
   config.throttling_period = 1.minute
 
   # Tiempo de acceso sin confirmar email
