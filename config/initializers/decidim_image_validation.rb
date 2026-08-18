@@ -4,10 +4,6 @@ Rails.application.config.after_initialize do
     validates :file, image_content: true, if: proc { file.attached? && file.image? }
   end
 
-  Decidim::User.class_eval do
-    validates :avatar, image_content: true, if: proc { respond_to?(:avatar) && avatar.attached? }
-  end
-
   Decidim::Organization.class_eval do
     validates :logo, image_content: true, if: proc { logo.attached? }
     validates :favicon, image_content: true, if: proc { favicon.attached? }
