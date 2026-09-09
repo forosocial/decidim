@@ -124,7 +124,23 @@ OVERRIDES = {
     # "Pactos" y "Conflictos" (Propuestas mantiene el comportamiento
     # original de Decidim vía `super`). Si Decidim cambia la lógica o
     # firma de default_states, revisar el prepend.
-    "app/controllers/decidim/proposals/proposals_controller.rb" => "92bf9b32eb4968b6ad71c1711e4750d2"
+    "app/controllers/decidim/proposals/proposals_controller.rb" => "92bf9b32eb4968b6ad71c1711e4750d2",
+    
+    # Override: app/views/decidim/proposals/admin/proposals/_form.html.erb
+    # Motivo: Cambiar el formulario de ceación de las proposas Propuestas para que
+    # en lugar de mostrar "Conflicto N" muestre el título del Conflicto del Pacto
+    # en cuestión.
+    # Los otros elementos (mapper: app/services/conflicto_mapper.rb e initializer:
+    # config/initializers/validar_pareja_pacto_conflicto.rb , son ficheros nuevos
+    # que no tienen contrapartida upstream, así que no tienen entrada que vigilar.
+    # Sin embargo, el initializer hace prepend sobre Decidim::Proposals::Admin::ProposalForm
+    # y asume que existe el atributo taxonomies y el contexto current_component.
+    # Si en una actualización Decidim renombra esa clase o cambia el manejo de
+    # taxonomías en el formulario, la validación podría romperse silenciosamente.
+    # En el caso de que cambie, no significa que el initializer deje de funcionar,
+    # pero es la señal de revisar que taxonomies y current_component siguen existiendo.
+    "app/views/decidim/proposals/admin/proposals/_form.html.erb" => "3c6d2675fa774c888150dc8da494fee0",
+    "app/forms/decidim/proposals/admin/proposal_form.rb" => "c222792947e0bac2cd4869adb5ce13bb"
   }
 }.freeze
 RSpec.describe "Decidim overrides" do

@@ -1,0 +1,126 @@
+<div class="form__wrapper">
+  <div class="card pt-4">
+    <div class="card-section">
+      <div class="row column pb-4">
+        <%= form.translated :text_field, :title, autofocus: true, aria: { label: :title }, data: { controller: "character-counter" } %>
+      </div>
+      <div class="row column">
+        <%= form.translated :editor, :body, resource_mentionable: true, aria: { label: :body } %>
+      </div>
+      <% if @form.meetings %>
+        <div class="meeting-fields">
+          <div class="row column">
+            <%= form.check_box :created_in_meeting, label: t(".created_in_meeting") %>
+          </div>
+          <div class="row column" id="proposal_meeting">
+            <%= form.select :meeting_id,
+                            options_for_select(@form.meetings&.map { |meeting| [present(meeting).title(html_escape: true), meeting.id] }, selected: meetings_as_authors_selected ),
+                            { include_blank: true, label: t(".select_a_meeting") },
+                            { multiple: false, class: "chosen-select" } %>
+          </div>
+        </div>
+      <% end %>
+      <% if @form.geocoding_enabled? %>
+        <div class="row column">
+          <%= form.geocoding_field :address %>
+        </div>
+      <% end %>
+
+      <%# ---- Nuevo fragmento a partir de aquí ---- %>
+      <%# ---- ---- ---- ---- ---- ---- ---- -- ---- %>
+      <% find_filter = lambda do |termino|
+          @form.taxonomy_filters&.find do |f|
+            (f.name || {}).values.compact_blank
+              .map { |v| v.to_s.strip.downcase }
+              .any? { |v| v == termino || v.start_with?(termino) }
+          end
+        end %>
+      <% pacto_filter = find_filter.call("pacto") %>
+
+      <%# El filtro "conflicto" de este UI es el que selecciona items POR DEBAJO del nivel raíz.
+          El filtro "Conflicto" del componente Conflictos tiene items de nivel 1 y queda excluido. %>
+      <% conflicto_filter = @form.taxonomy_filters&.find do |f|
+          next false if pacto_filter && f.id == pacto_filter.id
+          ids = f.filter_taxonomy_ids
+          ids.present? && Decidim::Taxonomy.where(id: ids).where.not(parent_id: f.root_taxonomy_id).exists?
+        end %>
+
+      <% if pacto_filter && conflicto_filter %>
+        <% mapeo = ConflictoMapper.mapeo(pacto_root: pacto_filter.root_taxonomy,
+                                        conflicto_root: conflicto_filter.root_taxonomy,
+                                        componente_actual: current_component) %>
+        <% pacto_opts = taxonomy_items_options_for_filter(pacto_filter) %>
+        <% selected_ids = Array(@form.taxonomies).map { |t| t.respond_to?(:id) ? t.id : t.to_i } %>
+        <% pacto_selected = (selected_ids & pacto_opts.map(&:last).map(&:to_i)).first %>
+        <% conflicto_selected = (selected_ids & taxonomy_items_options_for_filter(conflicto_filter).map(&:last).map(&:to_i)).first %>
+
+        <div class="row column">
+          <%= form.select :taxonomies,
+                options_for_select(pacto_opts, pacto_selected),
+                { include_blank: t("decidim.taxonomies.prompt"),
+                  label: decidim_sanitize_translated(pacto_filter.name) },
+                { name: "#{form.object_name}[taxonomies][]",
+                  id: "taxonomies-#{pacto_filter.id}",
+                  data: { mapeo: mapeo.to_json } } %>
+        </div>
+        <div class="row column">
+          <%= form.select :taxonomies,
+                options_for_select([], conflicto_selected),
+                { include_blank: t("decidim.taxonomies.prompt"),
+                  label: decidim_sanitize_translated(conflicto_filter.name) },
+                { name: "#{form.object_name}[taxonomies][]",
+                  id: "taxonomies-#{conflicto_filter.id}",
+                  data: { preseleccionado: conflicto_selected } } %>
+        </div>
+
+        <script>
+        (function () {
+          var pacto = document.getElementById("taxonomies-<%= pacto_filter.id %>");
+          var conflicto = document.getElementById("taxonomies-<%= conflicto_filter.id %>");
+          if (!pacto || !conflicto) return;
+
+          var mapeo = JSON.parse(pacto.dataset.mapeo || "{}");
+          var preseleccionado = conflicto.dataset.preseleccionado;
+
+          function rellenar() {
+            conflicto.innerHTML = '<option value=""></option>';
+            (mapeo[pacto.value] || []).forEach(function (opt) {
+              var o = document.createElement("option");
+              o.value = opt.id;
+              o.textContent = opt.text;
+              if (String(opt.id) === String(preseleccionado)) o.selected = true;
+              conflicto.appendChild(o);
+            });
+          }
+
+          pacto.addEventListener("change", rellenar);
+          rellenar();
+        })();
+        </script>
+      <% elsif @form.taxonomy_filters&.any? %>
+        <% @form.taxonomy_filters.each do |filter| %>
+          <div class="row column">
+            <%= filter_taxonomy_items_select_field form, :taxonomies, filter %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <%# ---- ---- ---- ---- ---- ---- ---- -- ---- %>
+      <%# ---- Fin de nuevo fragmento           ---- %>
+
+      <% if component_settings.attachments_allowed? %>
+        <div class="row column">
+          <%= form.attachment :documents,
+                              multiple: true,
+                              label: t("decidim.proposals.proposals.edit.add_attachments"),
+                              button_label: t("decidim.proposals.proposals.edit.add_attachments"),
+                              button_edit_label: t("decidim.proposals.proposals.edit.edit_attachments"),
+                              button_class: "button button__sm button__transparent-secondary mt-2 md:w-auto w-full",
+                              help_i18n_scope: "decidim.forms.file_help.file",
+                              help_text: t("attachment_legend", scope: "decidim.proposals.proposals.edit") %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<%= append_javascript_pack_tag "decidim_proposals_admin" %>
