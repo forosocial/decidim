@@ -124,6 +124,11 @@ OVERRIDES = {
     # "Pactos" y "Conflictos" (Propuestas mantiene el comportamiento
     # original de Decidim vía `super`). Si Decidim cambia la lógica o
     # firma de default_states, revisar el prepend.
+    #
+    # Tambien:
+    # Override: app/services/conflicto_mapper.rb
+    # Revisar ambos en caso de cambio.
+
     "app/controllers/decidim/proposals/proposals_controller.rb" => "92bf9b32eb4968b6ad71c1711e4750d2",
     
     # Override: app/views/decidim/proposals/admin/proposals/_form.html.erb
@@ -140,7 +145,13 @@ OVERRIDES = {
     # En el caso de que cambie, no significa que el initializer deje de funcionar,
     # pero es la señal de revisar que taxonomies y current_component siguen existiendo.
     "app/views/decidim/proposals/admin/proposals/_form.html.erb" => "3c6d2675fa774c888150dc8da494fee0",
-    "app/forms/decidim/proposals/admin/proposal_form.rb" => "c222792947e0bac2cd4869adb5ce13bb"
+    "app/forms/decidim/proposals/admin/proposal_form.rb" => "c222792947e0bac2cd4869adb5ce13bb",
+    
+    # Override: app/views/decidim/proposals/proposals/show.html.erb
+    # Motivo: Creación de un botón "Crear propuesta para este conflicto" visible 
+    # sólo para administradores y que abre en una nueva pestaña para incluir una nueva
+    # Propuesta en la que ya incluye la selección adecuada de Pacto y Conflicto.
+    "app/views/decidim/proposals/proposals/show.html.erb" => "e2c0adf5c283f7396d93207e1b7ab740"
   }
 }.freeze
 RSpec.describe "Decidim overrides" do
