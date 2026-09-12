@@ -1,5 +1,6 @@
 # config/initializers/validar_pareja_pacto_conflicto.rb
 # valida lo que se envía en el formulario (servidor)
+# depende de: app/services/conflicto_mapper.rb
 
 Rails.application.config.to_prepare do
   module ValidarParejaPactoConflicto
@@ -11,6 +12,8 @@ Rails.application.config.to_prepare do
 
     def pareja_pacto_conflicto_valida
       return unless current_component
+
+      id_componente_conflictos = ConflictoMapper.id_componente_conflictos
 
       filtros = Decidim::TaxonomyFilter.select { |f| f.components.where(id: current_component.id).exists? }
       normaliza = ->(h) { (h || {}).values.compact_blank.map { |v| v.to_s.strip.downcase } }
@@ -29,7 +32,8 @@ Rails.application.config.to_prepare do
       conflicto_item = hijo.parent
       componente_conflictos = current_component.participatory_space.components
         .where(manifest_name: "proposals")
-        .where("decidim_components.name->>'es' = ?", "Conflictos")
+        #.where("decidim_components.name->>'es' = ?", "Conflictos")
+        .where(decidim_components: { id: id_componente_conflictos })
         .first
       return unless componente_conflictos
 

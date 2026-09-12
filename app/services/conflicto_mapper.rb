@@ -5,16 +5,32 @@
 # self.preseleccion_para(propuesta) y self.raiz(item) devuelve los parámetros necesarios
 # para construir el botón en las páginas de las proposals tipo "Conflictos"
 # y enviar para enviar los valores de Pacto y Conflicto al formulario
-# usado para app/views/decidim/proposals/proposals/show.html.erb
+# usado en:
+#            app/views/decidim/proposals/proposals/show.html.erb
+#            app/views/decidim/proposals/admin/proposals/_form.html.erb
+#            config/initializers/validar_pareja_pacto_conflicto.rb
 
 class ConflictoMapper
-  NOMBRE_COMPONENTE_CONFLICTOS = "Conflictos".freeze
-  NOMBRE_COMPONENTE_PROPUESTAS = "Propuestas".freeze
+  ID_COMPONENTE_PACTOS = 1
+  ID_COMPONENTE_CONFLICTOS = 2
+  ID_COMPONENTE_PROPUESTAS = 3
+
+  def self.id_componente_pactos
+    ID_COMPONENTE_PACTOS
+  end
+  
+  def self.id_componente_conflictos
+    ID_COMPONENTE_CONFLICTOS
+  end
+
+  def self.id_componente_propuestas
+    ID_COMPONENTE_PROPUESTAS
+  end
 
   def self.componente_propuestas(componente_actual)
     componente_actual.participatory_space.components
       .where(manifest_name: "proposals")
-      .where("decidim_components.name->>'es' = ?", NOMBRE_COMPONENTE_PROPUESTAS)
+      .where(decidim_components: { id: ID_COMPONENTE_PROPUESTAS })
       .first
   end
 
@@ -46,7 +62,7 @@ class ConflictoMapper
   def self.mapeo(pacto_root:, conflicto_root:, componente_actual:)
     componente_conflictos = componente_actual.participatory_space.components
       .where(manifest_name: "proposals")
-      .where("decidim_components.name->>'es' = ?", NOMBRE_COMPONENTE_CONFLICTOS)
+      .where(decidim_components: { id: ID_COMPONENTE_CONFLICTOS })
       .first
     return {} unless componente_conflictos
 
