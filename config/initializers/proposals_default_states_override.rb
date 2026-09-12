@@ -29,25 +29,28 @@
 # spec/lib/overrides_spec.rb, siguiendo el patrón centralizado
 # de overrides del proyecto.
 
+# 12/09/2026 - Tras la activación de las Propuesta se ha generalizado a todos los componentes
+# y se ha incluido en el filtro quitar "accepted"
+
 module ForoSocial
   module Overrides
     module ProposalsControllerDefaultStates
       # Nombres (en castellano) de los componentes de Propuestas sobre los
       # que queremos excluir "evaluating" del filtro por defecto.
-      TARGET_COMPONENT_NAMES = %w(Pactos Conflictos).freeze
+      # TARGET_COMPONENT_NAMES = %w(Pactos Conflictos).freeze
 
       def default_states
-        return super unless target_component?
+        # return super unless target_component?
 
-        super - %w(evaluating)
+        super - %w(evaluating accepted)
       end
 
-      private
+      # private
 
-      def target_component?
-        component_name = translated_attribute(current_component.name).to_s
-        TARGET_COMPONENT_NAMES.include?(component_name)
-      end
+      # def target_component?
+        # component_name = translated_attribute(current_component.name).to_s
+        # TARGET_COMPONENT_NAMES.include?(component_name)
+      # end
     end
   end
 end
