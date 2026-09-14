@@ -64,13 +64,14 @@ extra_admin_link(
     <!-- ------------------------------ -->
     
     <% componente_actual = @proposal.decidim_component_id %>
-
+    
     <% id_componente_pactos = ConflictoMapper.id_componente_pactos %>
     <% id_componente_conflictos = ConflictoMapper.id_componente_conflictos %>
     <% id_componente_propuestas = ConflictoMapper.id_componente_propuestas %>
 
     <% if [id_componente_conflictos, id_componente_propuestas].include?(componente_actual) %>
       <div class="flash flex-col warning">
+
         <% tax_pacto_id = ConflictoMapper.preseleccion_para(@proposal)[0] %>  
         <% tax_pacto_title = [Decidim::Taxonomy.find(tax_pacto_id)&.name['es']] %>
         <% pacto = Decidim::Proposals::Proposal
@@ -119,16 +120,17 @@ extra_admin_link(
         <% ruta = ruta + "filter[with_any_state][]=&filter[with_any_state][]=state_not_published&filter[with_any_taxonomies[#{conflicto_root_id}]][]=" %>
         <% ruta = ruta + "#{propuesta_tax_id}&filter[with_any_taxonomies[1]][]=&filter[with_any_taxonomies[1]][]=#{tax_pacto_id}" %>
         <% ruta = ruta + "&filter[with_any_origin][]=&filter[activity]=&filter[activity]=all&filter[related_to]=&filter[related_to]=&order=random" %>
-        <%= link_to "Todas las propuestas para abordar este Conflicto", ruta, target: "_blank", rel: "noopener noreferrer" %>
-
+        <%= link_to "Ver <strong>todas las Propuestas </strong> planteadas para abordar este Conflicto".html_safe, ruta, target: "_blank", rel: "noopener noreferrer" %>
+        
         <% ruta = "/processes/#{Decidim::ParticipatoryProcess.first&.slug}/f/#{id_componente_conflictos}/proposals?" %>
         <% ruta = ruta + "filter[with_any_state][]=&filter[with_any_state][]=state_not_published&filter[with_any_state]" %>
         <% ruta = ruta + "[]=&filter[with_any_taxonomies[#{conflicto_root_id}]][]=&filter[with_any_taxonomies[1]][]=&filter" %>
         <% ruta = ruta + "[with_any_taxonomies[1]][]=#{tax_pacto_id}&filter[with_any_origin][]=&filter[type]=&filter[type]=all&order=random" %>
-        <%= link_to "Todos los conflictos de este Pacto", ruta, target: "_blank", rel: "noopener noreferrer" %>
+        <%= link_to "Ver <strong>todos los Conflictos</strong> identificados de este Pacto".html_safe, ruta, target: "_blank", rel: "noopener noreferrer" %>
       </div>
     <% end %>
 
+    
     <!-- -------------------------- -->
     <!-- Nuevo botón insertado aquí -->
     <!-- -------------------------- -->
@@ -168,6 +170,7 @@ extra_admin_link(
     <% end %>
   </section>
 
+  
   <section class="layout-main__section">
     <% if @proposal.emendation? %>
       <%= cell(
@@ -193,6 +196,21 @@ extra_admin_link(
       <%= render partial: "decidim/shared/static_map", locals: { icon_name: "proposals", geolocalizable: @proposal } %>
     </div>
   <% end %>
+
+  <!-- ----------------------------------------- -->
+  <!--- Enlace a los Conflictos de un Pacto      -->
+  <!-- ----------------------------------------- -->
+  <% if id_componente_pactos == componente_actual %>
+    <div class="flash flex-col warning" >
+      <% tax_pacto_id = ConflictoMapper.preseleccion_pacto(@proposal) %>
+      <% ruta = "/processes/#{Decidim::ParticipatoryProcess.first&.slug}/f/#{id_componente_conflictos}/proposals?" %>
+      <% ruta = ruta + "filter[with_any_state][]=&filter[with_any_state][]=state_not_published&filter[with_any_state]" %>
+      <% ruta = ruta + "[]=&filter[with_any_taxonomies[16]][]=&filter[with_any_taxonomies[1]][]=&filter" %>
+      <% ruta = ruta + "[with_any_taxonomies[1]][]=#{tax_pacto_id}&filter[with_any_origin][]=&filter[type]=&filter[type]=all&order=random" %>
+      <%= link_to "Ver <strong>todos los Conflictos</strong> identificados de este Pacto".html_safe, ruta, target: "_blank", rel: "noopener noreferrer" %>
+    </div>
+  <% end %>
+  <!-- ----------------------------------------- -->
 
   <%= cell "decidim/tab_panels", tab_panel_items %>
 

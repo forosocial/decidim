@@ -1,7 +1,7 @@
 # app/services/conflicto_mapper.rb
 # Construye las opciones del select (presentación) con la función self.mapeo
 # usado para app/views/decidim/proposals/admin/proposals/_form.html.erb
-# Tambien con las funciones self.componente_propuestas(componente_actual), 
+# Tambien con las funciones self.componente_propuestas(componente_actual),
 # self.preseleccion_para(propuesta) y self.raiz(item) devuelve los parámetros necesarios
 # para construir el botón en las páginas de las proposals tipo "Conflictos"
 # y enviar para enviar los valores de Pacto y Conflicto al formulario
@@ -18,7 +18,7 @@ class ConflictoMapper
   def self.id_componente_pactos
     ID_COMPONENTE_PACTOS
   end
-  
+
   def self.id_componente_conflictos
     ID_COMPONENTE_CONFLICTOS
   end
@@ -29,15 +29,15 @@ class ConflictoMapper
 
   def self.componente_propuestas(componente_actual)
     componente_actual.participatory_space.components
-      .where(manifest_name: "proposals")
-      .where(decidim_components: { id: ID_COMPONENTE_PROPUESTAS })
-      .first
+                     .where(manifest_name: "proposals")
+                     .where(decidim_components: { id: ID_COMPONENTE_PROPUESTAS })
+                     .first
   end
 
   # A partir de una propuesta del componente Conflictos, devuelve
   # [pacto_item_id, hijo_item_id] para preseleccionar el formulario de Propuestas.
   # Devuelve nil si la propuesta no es un conflicto (p. ej., un Pacto) → el botón no se muestra.
-  
+
   def self.preseleccion_para(propuesta)
     items = propuesta.taxonomies
     pacto_item = items.find { |t| raiz(t).name["es"].to_s.strip.downcase.start_with?("pacto") }
@@ -53,6 +53,12 @@ class ConflictoMapper
     [pacto_item.id, hijo.id]
   end
 
+  def self.preseleccion_pacto(pacto)
+    item = pacto.taxonomies
+    pacto_item = item.find { |t| raiz(t).name["es"].to_s.strip.downcase.start_with?("pacto") }
+    pacto_item.id
+  end
+
   def self.raiz(item)
     node = item
     node = node.parent while node&.parent
@@ -61,9 +67,9 @@ class ConflictoMapper
 
   def self.mapeo(pacto_root:, conflicto_root:, componente_actual:)
     componente_conflictos = componente_actual.participatory_space.components
-      .where(manifest_name: "proposals")
-      .where(decidim_components: { id: ID_COMPONENTE_CONFLICTOS })
-      .first
+                                             .where(manifest_name: "proposals")
+                                             .where(decidim_components: { id: ID_COMPONENTE_CONFLICTOS })
+                                             .first
     return {} unless componente_conflictos
 
     hijo_por_conflicto = conflicto_root.children.to_h do |conf|
