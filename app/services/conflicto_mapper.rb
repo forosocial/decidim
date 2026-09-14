@@ -92,7 +92,7 @@ class ConflictoMapper
         hijo_id = hijo_por_conflicto[item_conf.id]
         next unless hijo_id
 
-        texto = conflicto.title[I18n.locale.to_s].presence || conflicto.title["es"]
+        texto = Decidim::TranslationsHelper.translated_attribute(conflicto.title)
         mapping[pacto_item.id] << { id: hijo_id, text: texto }
       end
 

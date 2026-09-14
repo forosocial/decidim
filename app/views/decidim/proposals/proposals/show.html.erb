@@ -81,12 +81,13 @@ extra_admin_link(
             .where("decidim_taxonomies.name->>'es' IN (?)", tax_pacto_title)
             .group("decidim_proposals_proposals.id")
             .having("COUNT(DISTINCT decidim_taxonomies.id) = ?", tax_pacto_title.length)
-          .where(decidim_proposals_proposal_state_id: nil) %>
+            .where(decidim_proposals_proposal_state_id: nil)
+            .first %>
 
-        <% ruta = "/processes/#{Decidim::ParticipatoryProcess.first&.slug}/f/#{id_componente_pactos}/proposals/#{pacto.pluck(:id)[0]}" %>
+        <% ruta = "/processes/#{Decidim::ParticipatoryProcess.first&.slug}/f/#{id_componente_pactos}/proposals/#{pacto&.id}" %>
 
         <h2 class="h4 flex items-center gap 2 mb-4">
-          <%= link_to pacto.pluck(Arel.sql("title->>'es'"))[0], ruta, target: "_blank", rel: "noopener noreferrer" %>
+          <%= link_to translated_attribute(pacto.title), ruta, target: "_blank", rel: "noopener noreferrer" %>
         </h2>
 
         <% conflicto_root_id = @proposal.taxonomies.sort[1]&.parent_id %>
@@ -120,13 +121,18 @@ extra_admin_link(
         <% ruta = ruta + "filter[with_any_state][]=&filter[with_any_state][]=state_not_published&filter[with_any_taxonomies[#{conflicto_root_id}]][]=" %>
         <% ruta = ruta + "#{propuesta_tax_id}&filter[with_any_taxonomies[1]][]=&filter[with_any_taxonomies[1]][]=#{tax_pacto_id}" %>
         <% ruta = ruta + "&filter[with_any_origin][]=&filter[activity]=&filter[activity]=all&filter[related_to]=&filter[related_to]=&order=random" %>
-        <%= link_to "Ver <strong>todas las Propuestas </strong> planteadas para abordar este Conflicto".html_safe, ruta, target: "_blank", rel: "noopener noreferrer" %>
+
+        <%= link_to t("ver_todas_propuestas_html", scope: "decidim.conflicto_propuesta.overrides"),
+            ruta, target: "_blank", rel: "noopener noreferrer" %>
         
         <% ruta = "/processes/#{Decidim::ParticipatoryProcess.first&.slug}/f/#{id_componente_conflictos}/proposals?" %>
         <% ruta = ruta + "filter[with_any_state][]=&filter[with_any_state][]=state_not_published&filter[with_any_state]" %>
         <% ruta = ruta + "[]=&filter[with_any_taxonomies[#{conflicto_root_id}]][]=&filter[with_any_taxonomies[1]][]=&filter" %>
         <% ruta = ruta + "[with_any_taxonomies[1]][]=#{tax_pacto_id}&filter[with_any_origin][]=&filter[type]=&filter[type]=all&order=random" %>
-        <%= link_to "Ver <strong>todos los Conflictos</strong> identificados de este Pacto".html_safe, ruta, target: "_blank", rel: "noopener noreferrer" %>
+
+        <%= link_to t("ver_todos_conflictos_html", scope: "decidim.conflicto_propuesta.overrides"),
+            ruta, target: "_blank", rel: "noopener noreferrer" %>
+
       </div>
     <% end %>
 
@@ -140,10 +146,12 @@ extra_admin_link(
       (pre_ids = ConflictoMapper.preseleccion_para(@proposal)) &&
       (comp_propuestas = ConflictoMapper.componente_propuestas(current_component)) %>
       <div class="layout-main__section">
-        <%= link_to "Crear propuesta para abordar este conflicto",
-              Decidim::EngineRouter.admin_proxy(comp_propuestas).new_proposal_path(pre_taxonomies: pre_ids),
-              class: "button button__sm button__secondary",
-              target: "_blank", rel: "noopener" %>
+        
+        <%= link_to t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides"),
+            Decidim::EngineRouter.admin_proxy(comp_propuestas).new_proposal_path(pre_taxonomies: pre_ids),
+            class: "button button__sm button__secondary",
+            target: "_blank", rel: "noopener" %>
+
       </div>
     <% end %>
     
@@ -207,7 +215,9 @@ extra_admin_link(
       <% ruta = ruta + "filter[with_any_state][]=&filter[with_any_state][]=state_not_published&filter[with_any_state]" %>
       <% ruta = ruta + "[]=&filter[with_any_taxonomies[16]][]=&filter[with_any_taxonomies[1]][]=&filter" %>
       <% ruta = ruta + "[with_any_taxonomies[1]][]=#{tax_pacto_id}&filter[with_any_origin][]=&filter[type]=&filter[type]=all&order=random" %>
-      <%= link_to "Ver <strong>todos los Conflictos</strong> identificados de este Pacto".html_safe, ruta, target: "_blank", rel: "noopener noreferrer" %>
+
+      <%= link_to t("ver_todos_conflictos_html", scope: "decidim.conflicto_propuesta.overrides"),
+            ruta, target: "_blank", rel: "noopener noreferrer" %>
     </div>
   <% end %>
   <!-- ----------------------------------------- -->

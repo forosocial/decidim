@@ -1,0 +1,8 @@
+# config/locales/conflicto_propuesta_es.yml
+es:
+  decidim:
+    conflicto_propuesta:
+      overrides:
+        ver_todas_propuestas_html: "Ver <strong>todas las Propuestas</strong> planteadas para abordar este Conflicto"
+        ver_todos_conflictos_html: "Ver <strong>todos los Conflictos</strong> identificados de este Pacto"
+        crear_propuesta_conflicto: "Crear propuesta para abordar este conflicto"
