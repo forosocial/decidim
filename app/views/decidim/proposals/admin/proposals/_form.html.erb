@@ -1,6 +1,6 @@
-<!-- app/views/decidim/proposals/admin/proposals/_form.html.erb -->
-<!-- Depende de app/services/conflicto_mapper.rb -->
-<!-- Necesita config/initializers/validar_pareja_pacto_conflicto.rb -->
+<%# app/views/decidim/proposals/admin/proposals/_form.html.erb %>
+<%# Depende de app/services/conflicto_mapper.rb %>
+<%# Necesita config/initializers/validar_pareja_pacto_conflicto.rb %>
 
 <div class="form__wrapper">
   <div class="card pt-4">
@@ -43,6 +43,7 @@
 
       <%# El filtro "conflicto" de este UI es el que selecciona items POR DEBAJO del nivel raíz.
           El filtro "Conflicto" del componente Conflictos tiene items de nivel 1 y queda excluido. %>
+
       <% conflicto_filter = @form.taxonomy_filters&.find do |f|
           next false if pacto_filter && f.id == pacto_filter.id
           ids = f.filter_taxonomy_ids
@@ -101,6 +102,7 @@
           rellenar();
         })();
         </script>
+
       <% elsif @form.taxonomy_filters&.any? %>
         <% @form.taxonomy_filters.each do |filter| %>
           <div class="row column">

@@ -1,6 +1,6 @@
-<!-- app/views/decidim/proposals/proposals/show.html.erb -->
-<!-- Depende de app/services/conflicto_mapper.rb -->
-<!-- Necesita config/initializers/preseleccion_taxonomias_propuestas.rb -->
+<%# app/views/decidim/proposals/proposals/show.html.erb %>
+<%# Depende de app/services/conflicto_mapper.rb %>
+<%# Necesita config/initializers/preseleccion_taxonomias_propuestas.rb %>
 
 <% add_decidim_meta_tags(
   description: present(@proposal).body,
@@ -59,9 +59,9 @@ extra_admin_link(
       <h1 class="h2 decorator"><%= present(@proposal).title(html_escape: true) %></h1>
     <% end %>
 
-    <!-- ------------------------------ -->
-    <!-- Nuevos enlaces insertados aquí -->
-    <!-- ------------------------------ -->
+    <%# ------------------------------ %>
+    <%# Nuevos enlaces insertados aquí %>
+    <%# ------------------------------ %>
     
     <% componente_actual = @proposal.decidim_component_id %>
     
@@ -137,11 +137,11 @@ extra_admin_link(
     <% end %>
 
     
-    <!-- -------------------------- -->
-    <!-- Nuevo botón insertado aquí -->
-    <!-- -------------------------- -->
+    <%# -------------------------- %>
+    <%# Nuevo botón insertado aquí %>
+    <%# -------------------------- %>
 
-    <!-- Oculta o muestra el botón en función del rol del usuario -->
+    <%# Oculta o muestra el botón en función del rol del usuario %>
     <% if current_user&.admin? &&
       (pre_ids = ConflictoMapper.preseleccion_para(@proposal)) &&
       (comp_propuestas = ConflictoMapper.componente_propuestas(current_component)) %>
@@ -155,9 +155,9 @@ extra_admin_link(
       </div>
     <% end %>
     
-    <!-- -------------------------- -->
-    <!-- Fin de las modificaciones  -->
-    <!-- -------------------------- -->
+    <%# -------------------------- %>
+    <%# Fin de las modificaciones  %>
+    <%# -------------------------- %>
 
     <% unless component_settings.participatory_texts_enabled? %>
       <% unless ["section","subsection"].include?(@proposal.participatory_text_level) %>
@@ -205,9 +205,9 @@ extra_admin_link(
     </div>
   <% end %>
 
-  <!-- ----------------------------------------- -->
-  <!--- Enlace a los Conflictos de un Pacto      -->
-  <!-- ----------------------------------------- -->
+  <%# ----------------------------------------- %>
+  <%#- Enlace a los Conflictos de un Pacto      %>
+  <%# ----------------------------------------- %>
   <% if id_componente_pactos == componente_actual %>
     <div class="flash flex-col warning" >
       <% tax_pacto_id = ConflictoMapper.preseleccion_pacto(@proposal) %>
@@ -220,7 +220,7 @@ extra_admin_link(
             ruta, target: "_blank", rel: "noopener noreferrer" %>
     </div>
   <% end %>
-  <!-- ----------------------------------------- -->
+  <%# ----------------------------------------- %>
 
   <%= cell "decidim/tab_panels", tab_panel_items %>
 
