@@ -83,6 +83,7 @@ class ConflictoMapper
 
     Decidim::Proposals::Proposal
       .where(decidim_component_id: componente_conflictos.id, decidim_proposals_proposal_state_id: nil)
+      .where.not(published_at: nil)
       .includes(:taxonomies)
       .find_each do |conflicto|
         pacto_item = conflicto.taxonomies.find { |t| pacto_ids.include?(t.id) }
@@ -93,6 +94,8 @@ class ConflictoMapper
         next unless hijo_id
 
         texto = Decidim::TranslationsHelper.translated_attribute(conflicto.title)
+        id_conf = conflicto.id
+        texto = "#{texto} (#{id_conf})"
         mapping[pacto_item.id] << { id: hijo_id, text: texto }
       end
 
