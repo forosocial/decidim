@@ -32,23 +32,22 @@
 
       <%# ---- Nuevo fragmento a partir de aquí ---- %>
       <%# ---- ---- ---- ---- ---- ---- ---- -- ---- %>
+
       <% find_filter = lambda do |termino|
           @form.taxonomy_filters&.find do |f|
             (f.name || {}).values.compact_blank
               .map { |v| v.to_s.strip.downcase }
               .any? { |v| v == termino || v.start_with?(termino) }
           end
-        end %>
+        end
+      %>
       <% pacto_filter = find_filter.call("pacto") %>
-
-      <%# El filtro "conflicto" de este UI es el que selecciona items POR DEBAJO del nivel raíz.
-          El filtro "Conflicto" del componente Conflictos tiene items de nivel 1 y queda excluido. %>
-
       <% conflicto_filter = @form.taxonomy_filters&.find do |f|
           next false if pacto_filter && f.id == pacto_filter.id
           ids = f.filter_taxonomy_ids
           ids.present? && Decidim::Taxonomy.where(id: ids).where.not(parent_id: f.root_taxonomy_id).exists?
-        end %>
+        end
+      %>
 
       <% if pacto_filter && conflicto_filter %>
         <% mapeo = ConflictoMapper.mapeo(pacto_root: pacto_filter.root_taxonomy,
@@ -57,7 +56,7 @@
         <% pacto_opts = taxonomy_items_options_for_filter(pacto_filter) %>
         <% selected_ids = Array(@form.taxonomies).map { |t| t.respond_to?(:id) ? t.id : t.to_i } %>
         <% pacto_selected = (selected_ids & pacto_opts.map(&:last).map(&:to_i)).first %>
-        <% conflicto_selected = (selected_ids & taxonomy_items_options_for_filter(conflicto_filter).map(&:last).map(&:to_i)).first %>
+        <% conflicto_selected_ids = selected_ids & taxonomy_items_options_for_filter(conflicto_filter).map(&:last).map(&:to_i) %>
 
         <div class="row column">
           <%= form.select :taxonomies,
@@ -68,39 +67,40 @@
                   id: "taxonomies-#{pacto_filter.id}",
                   data: { mapeo: mapeo.to_json } } %>
         </div>
+
         <div class="row column">
           <%= form.select :taxonomies,
-                options_for_select([], conflicto_selected),
-                { include_blank: t("decidim.taxonomies.prompt"),
-                  label: decidim_sanitize_translated(conflicto_filter.name) },
-                { name: "#{form.object_name}[taxonomies][]",
+                options_for_select([], conflicto_selected_ids),
+                { label: decidim_sanitize_translated(conflicto_filter.name) },
+                { multiple: true, size: 6,
+                  name: "#{form.object_name}[taxonomies][]",
                   id: "taxonomies-#{conflicto_filter.id}",
-                  data: { preseleccionado: conflicto_selected } } %>
+                  data: { preseleccionados: conflicto_selected_ids.to_json } } %>
         </div>
 
         <script>
-        (function () {
-          var pacto = document.getElementById("taxonomies-<%= pacto_filter.id %>");
-          var conflicto = document.getElementById("taxonomies-<%= conflicto_filter.id %>");
-          if (!pacto || !conflicto) return;
+          (function () {
+            var pacto = document.getElementById("taxonomies-<%= pacto_filter.id %>");
+            var conflicto = document.getElementById("taxonomies-<%= conflicto_filter.id %>");
+            if (!pacto || !conflicto) return;
 
-          var mapeo = JSON.parse(pacto.dataset.mapeo || "{}");
-          var preseleccionado = conflicto.dataset.preseleccionado;
+            var mapeo = JSON.parse(pacto.dataset.mapeo || "{}");
+            var preseleccionados = JSON.parse(conflicto.dataset.preseleccionados || "[]").map(String);
 
-          function rellenar() {
-            conflicto.innerHTML = '<option value=""></option>';
-            (mapeo[pacto.value] || []).forEach(function (opt) {
-              var o = document.createElement("option");
-              o.value = opt.id;
-              o.textContent = opt.text;
-              if (String(opt.id) === String(preseleccionado)) o.selected = true;
-              conflicto.appendChild(o);
-            });
-          }
+            function rellenar() {
+              conflicto.innerHTML = "";
+              (mapeo[pacto.value] || []).forEach(function (opt) {
+                var o = document.createElement("option");
+                o.value = opt.id;
+                o.textContent = opt.text;
+                o.selected = preseleccionados.indexOf(String(opt.id)) !== -1;
+                conflicto.appendChild(o);
+              });
+            }
 
-          pacto.addEventListener("change", rellenar);
-          rellenar();
-        })();
+            pacto.addEventListener("change", rellenar);
+            rellenar();
+          })();
         </script>
 
       <% elsif @form.taxonomy_filters&.any? %>

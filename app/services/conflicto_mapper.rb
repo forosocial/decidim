@@ -101,4 +101,42 @@ class ConflictoMapper
 
     mapping
   end
+
+  # Número de propuestas del componente Propuestas asociadas a un (pacto, conflicto) concreto
+  def self.propuestas_para_conflicto(conflicto, componente_propuestas)
+    items = conflicto.taxonomies
+
+    pacto_item = items.find do |t|
+      raiz(t)&.name&.dig("es").to_s.strip.downcase.start_with?("pacto")
+    end
+    item_conf = items.find do |t|
+      raiz(t)&.name&.dig("es").to_s.strip.downcase.start_with?("conflicto")
+    end
+    return 0 unless pacto_item && item_conf
+
+    hijo_ids = item_conf.children.ids
+    return 0 if hijo_ids.empty?
+
+    base = Decidim::Proposals::Proposal
+           .published.not_hidden
+           .where(decidim_component_id: componente_propuestas.id)
+
+    # Que tenga el Pacto del conflicto actual...
+    con_pacto = base.where(
+      id: Decidim::Proposals::Proposal
+        .joins(:taxonomies)
+        .where(decidim_taxonomies: { id: pacto_item.id })
+        .select(:id)
+    )
+
+    # ... Y uno de los items hijo ("Propuesta resolución conflicto N")
+    con_conflicto = con_pacto.where(
+      id: Decidim::Proposals::Proposal
+        .joins(:taxonomies)
+        .where(decidim_taxonomies: { id: hijo_ids })
+        .select(:id)
+    )
+
+    con_conflicto.count
+  end
 end
