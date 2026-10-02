@@ -18,6 +18,9 @@ gem "decidim-term_customizer", github: "openpoke/decidim-module-term_customizer"
 # gem "decidim-initiatives", "0.31.4"
 # gem "decidim-templates", "0.31.4"
 
+# módulo para posibilitar envío de boletines a los inscritos a un encuentro
+gem "decidim-newsletter_meetings", github: "forosocial/decidim-newsletter-meetings", branch: "main"
+
 gem "bootsnap", "~> 1.3"
 
 gem "puma", ">= 6.3.1"

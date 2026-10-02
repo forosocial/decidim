@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/forosocial/decidim-newsletter-meetings.git
+  revision: cfe615af255a3658d5e3774730e66443bd363264
+  branch: main
+  specs:
+    decidim-newsletter_meetings (0.1.0)
+      decidim-admin (>= 0.27, < 0.32)
+      decidim-meetings (>= 0.27, < 0.32)
+
+GIT
   remote: https://github.com/openpoke/decidim-module-extra_user_fields.git
   revision: 6f2a13237a767896fe992b26602d94078aad023b
   specs:
@@ -1006,6 +1015,7 @@ DEPENDENCIES
   decidim-decidim_awesome
   decidim-dev (= 0.31.4)
   decidim-extra_user_fields!
+  decidim-newsletter_meetings!
   decidim-term_customizer!
   erb_lint
   exception_notification
