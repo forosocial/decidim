@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/forosocial/decidim-newsletter-meetings.git
-  revision: cfe615af255a3658d5e3774730e66443bd363264
+  revision: 9e9beffc12b0229b4518aca0bbff50c8a0a096e3
   branch: main
   specs:
     decidim-newsletter_meetings (0.1.0)
