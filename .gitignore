@@ -54,3 +54,7 @@ app/views/static/api/docs/
 
 # Archivos de VS Code (configuraciones personales)
 .vscode/
+
+# Archivos del sistema de documentación
+.yardoc/
+doc/
