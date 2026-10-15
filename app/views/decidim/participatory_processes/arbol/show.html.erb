@@ -1,0 +1,177 @@
+<%# app/views/decidim/participatory_processes/arbol/show.html.erb %>
+
+<% add_decidim_meta_tags(title: t("decidim.participatory_processes.arbol.title", process: translated_attribute(current_participatory_space.title))) %>
+
+<style>
+  .arbol-tree,
+  .arbol-tree ul { list-style: none; margin: 0; padding: 0; }
+
+  /* ocupar todo el ancho disponible:
+     - .layout-item es una rejilla de 12 columnas: el ul entraria como item
+       de 1 columna. grid-column 1 / -1 lo abarca entero (sin tocar el
+       grid del contenedor, que comparten otras vistas).
+     - width 100% + box-sizing cubre el caso de contenedor flex. */
+  .arbol-tree {
+    width: 100%;
+    box-sizing: border-box;
+    grid-column: 1 / -1;
+  }
+
+  .arbol-tree li { position: relative; padding: 0 0 .35rem 1.7rem; }
+
+  /* conectores: esquina en cada nodo y linea vertical hasta el hermano */
+  .arbol-tree li::before {
+    content: "";
+    position: absolute;
+    left: .45rem; top: 0;
+    width: .85rem; height: 1.15rem;
+    border-left: 1px solid #b5b5b5;
+    border-bottom: 1px solid #b5b5b5;
+  }
+  .arbol-tree li::after {
+    content: "";
+    position: absolute;
+    left: .45rem; top: 0; bottom: 0;
+    border-left: 1px solid #b5b5b5;
+  }
+  .arbol-tree li:last-child::after { display: none; }
+  .arbol-tree ul ul li::before { height: .95rem; } /* hojas mas bajitas */
+
+  /* raices (pactos) sin conectores */
+  .arbol-tree > li { padding-left: 0; padding-bottom: 1rem; }
+  .arbol-tree > li::before,
+  .arbol-tree > li::after { display: none; }
+
+  .arbol-node {
+    display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+    padding: .35rem .6rem;
+    border-radius: 4px; background: #fafafa; border: 1px solid #e4e4e4;
+    font-size: .95rem;
+  }
+  .arbol-node--pacto {
+    background: #e8eefc; border-color: #c6d4f5;
+    font-size: 1.1rem; font-weight: 600;
+  }
+  .arbol-node--conflicto { background: #fff3e2; border-color: #f5d9b0; font-weight: 600; }
+  .arbol-node--propuesta { background: #fff; font-weight: 400; padding: .2rem .5rem; }
+
+  .arbol-marker {
+    flex-shrink: 0; width: .6rem; height: .6rem; border-radius: 50%;
+    background: #999;
+  }
+  .arbol-node--pacto .arbol-marker { background: #1a5fd0; }
+  .arbol-node--conflicto .arbol-marker { background: #e67e22; }
+  .arbol-node--propuesta .arbol-marker { background: #27ae60; }
+
+  .arbol-vacio { color: #8a8a8a; font-style: italic; font-size: .85rem; padding: .2rem .5rem; }
+  .arbol-pacto-cuerpo {
+    flex-basis: 100%;
+    font-weight: 400; font-size: .9rem; color: #333;
+  }
+  .arbol-contador { color: #666; font-size: .8rem; font-weight: 400; }
+  .arbol-estado { margin-left: .5rem; }
+</style>
+
+<div class="layout-item">
+  <h1 class="h3 decorator" style="grid-column: 1 / -1;">
+    <%= t("decidim.participatory_processes.arbol.title", process: translated_attribute(current_participatory_space.title)) %>
+  </h1>
+
+  <%# modo "solo consensuada" por nivel: cuando el ESTADOS_* de ese nivel es
+      exactamente [:sin_respuesta], ese nivel no pinta botones y el titulo
+      lleva el enlace a la proposal consensuada %>
+  <% solo_pactos = solo_consensuadas?(ArbolConfig::ESTADOS_PACTOS) %>
+  <% solo_conflictos = solo_consensuadas?(ArbolConfig::ESTADOS_CONFLICTOS) %>
+  <% solo_propuestas = solo_consensuadas?(ArbolConfig::ESTADOS_PROPUESTAS) %>
+
+  <ul class="arbol-tree">
+    <% arbol.each do |pacto_item, rama| %>
+      <li>
+        <div class="arbol-node arbol-node--pacto">
+          <span class="arbol-marker"></span>
+          <% pp_filtradas = rama[:pacto_propuestas_filtradas].to_a %>
+          <% if solo_pactos %>
+            <%# sin botones "consensuada": el titulo del pacto lleva el enlace %>
+            <% if pp_filtradas.any? %>
+              <%= link_to router_pactos.proposal_path(pp_filtradas.first), target: "_blank", rel: "noopener" do %>
+                <%= pacto_item.name["es"] %>
+              <% end %>
+            <% else %>
+              <%= pacto_item.name["es"] %>
+            <% end %>
+          <% else %>
+            <span><%= pacto_item.name["es"] %></span>
+            <% ordenar_por_estado(pp_filtradas).each do |pp| %>
+              <%= link_to router_pactos.proposal_path(pp), target: "_blank", rel: "noopener" do %>
+                <%= etiqueta_estado(pp) %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+
+        <ul>
+          <% if rama[:conflictos].empty? %>
+            <li><span class="arbol-vacio"><%= t("decidim.participatory_processes.arbol.sin_conflictos") %></span></li>
+          <% end %>
+          <%# un nodo por item "Conflicto N": los records (propuesta original,
+              enmiendas, duplicados) se agrupan en una sola linea, con un
+              boton de estado por cada uno, enlazando a su proposal. Las
+              hojas se unen y deduplican por id entre los records. %>
+          <% rama[:conflictos].group_by { |n| n[:conflicto_item].id }.each do |_, nodos| %>
+            <% principal = nodos.first %>
+            <% records = nodos.map { |nd| nd[:conflicto] } %>
+            <% hojas = nodos.flat_map { |nd| nd[:propuestas].to_a }.uniq(&:id) %>
+            <li>
+              <div class="arbol-node arbol-node--conflicto">
+                <span class="arbol-marker"></span>
+                <% if solo_conflictos %>
+                  <%# sin botones: el titulo del conflicto lleva el enlace %>
+                  <%= link_to principal[:conflicto].title["es"],
+                              router_conflictos.proposal_path(principal[:conflicto]),
+                              target: "_blank", rel: "noopener" %>
+                <% else %>
+                  <span><%= principal[:conflicto].title["es"] %></span>
+                  <% ordenar_por_estado(records).each do |rec| %>
+                    <%= link_to router_conflictos.proposal_path(rec), target: "_blank", rel: "noopener" do %>
+                      <%= etiqueta_estado(rec) %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+                <span class="arbol-contador"><%= hojas.size %> propuestas</span>
+                <%# boton_nueva_propuesta_conflicto(principal[:conflicto]) %>
+              </div>
+
+              <ul>
+                <% if hojas.empty? %>
+                  <li><span class="arbol-vacio"><%= t("decidim.participatory_processes.arbol.sin_propuestas") %></span></li>
+                <% end %>
+                <%# hojas: una linea por titulo; si hay varios records con el
+                    mismo titulo (enmiendas/duplicados), un boton por record %>
+                <% ordenar_por_estado(hojas).group_by { |pr| pr.title["es"] }.each do |_, prs| %>
+                  <li>
+                    <div class="arbol-node arbol-node--propuesta">
+                      <span class="arbol-marker"></span>
+                      <% if solo_propuestas %>
+                        <%# sin botones: el titulo de la propuesta lleva el enlace %>
+                        <%= link_to prs.first.title["es"],
+                                    router_propuestas.proposal_path(prs.first),
+                                    target: "_blank", rel: "noopener" %>
+                      <% else %>
+                        <span><%= prs.first.title["es"] %></span>
+                        <% prs.each do |pr| %>
+                          <%= link_to router_propuestas.proposal_path(pr), target: "_blank", rel: "noopener" do %>
+                            <%= etiqueta_estado(pr) %>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </li>
+                <% end %>
+              </ul>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  </ul>
+</div>

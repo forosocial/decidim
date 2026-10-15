@@ -1,0 +1,75 @@
+ca:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "Arbre del %{process}"
+        sin_conflictos: "Sense conflictes"
+        sin_propuestas: "Sense propostes encara"
+        boton_nueva_propuesta: "Crear proposta per a aquest conflicte"
+        estados:
+          consensuada: "Actualment consensuada"
+          accepted: "Acceptada"
+          rejected: "Rebutjada"
+          evaluating: "En avaluació"
+          not_answered: "Sense resposta"
+          withdrawn: "Retirada"
+en:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "%{process} tree"
+        sin_conflictos: "No conflicts"
+        sin_propuestas: "No proposals yet"
+        boton_nueva_propuesta: "Create a proposal for this conflict"
+        estados:
+          consensuada: "Currently agreed"
+          accepted: "Accepted"
+          rejected: "Rejected"
+          evaluating: "Under evaluation"
+          not_answered: "Not answered"
+          withdrawn: "Withdrawn"
+es:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "Árbol del %{process}"
+        sin_conflictos: "Sin conflictos"
+        sin_propuestas: "Sin propuestas todavía"
+        boton_nueva_propuesta: "Crear propuesta para este conflicto"
+        estados:
+          consensuada: "Actualmente consensuada"
+          accepted: "Aceptada"
+          rejected: "Rechazada"
+          evaluating: "En evaluación"
+          not_answered: "Sin respuesta"
+          withdrawn: "Retirada"
+eu:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "%{process} zuhaitza"
+        sin_conflictos: "Ez dago gatazkarik"
+        sin_propuestas: "Oraindik ez dago proposamenik"
+        boton_nueva_propuesta: "Sortu proposamen bat gatazka honetarako"
+        estados:
+          consensuada: "Unean ados"
+          accepted: "Onartua"
+          rejected: "Baztertua"
+          evaluating: "Ebaluazioan"
+          not_answered: "Erantzunik gabe"
+          withdrawn: "Erretiratua"
+gl:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "Árbore do %{process}"
+        sin_conflictos: "Sen conflitos"
+        sin_propuestas: "Sen propostas aínda"
+        boton_nueva_propuesta: "Crear proposta para este conflito"
+        estados:
+          consensuada: "Actualmente consensuada"
+          accepted: "Aceptada"
+          rejected: "Rexeitada"
+          evaluating: "En avaliación"
+          not_answered: "Sen resposta"
+          withdrawn: "Retirada"
