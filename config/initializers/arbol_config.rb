@@ -30,7 +30,7 @@ module ArbolConfig
   ESTADOS_CONFLICTOS = [:sin_respuesta].freeze
 
   # proposals del componente "Propuestas": las HOJAS del arbol
-  ESTADOS_PROPUESTAS = [:todas].freeze
+  ESTADOS_PROPUESTAS = [:sin_respuesta].freeze
 
   # orden canonico de los botones de estado en cada linea
   ORDEN_ESTADOS = %w(consensuada accepted evaluating rejected not_answered withdrawn).freeze
