@@ -102,41 +102,75 @@ class ConflictoMapper
     mapping
   end
 
-  # Número de propuestas del componente Propuestas asociadas a un (pacto, conflicto) concreto
-  def self.propuestas_para_conflicto(conflicto, componente_propuestas)
-    items = conflicto.taxonomies
-
-    pacto_item = items.find do |t|
+  # Item de Pacto (a cualquier nivel) que lleva una propuesta
+  def self.pacto_item_de(propuesta)
+    propuesta.taxonomies.find do |t|
       raiz(t)&.name&.dig("es").to_s.strip.downcase.start_with?("pacto")
     end
-    item_conf = items.find do |t|
+  end
+
+  # Item del árbol de conflicto que lleva una propuesta
+  def self.conflicto_item_de(propuesta)
+    propuesta.taxonomies.find do |t|
       raiz(t)&.name&.dig("es").to_s.strip.downcase.start_with?("conflicto")
     end
+  end
+
+  # TODOS los items hijo ("Propuesta resolución conflicto N") de una propuesta
+  def self.hijo_items_de(propuesta)
+    propuesta.taxonomies.select do |t|
+      r = raiz(t)
+      r && t.parent_id != r.id && r.name["es"].to_s.strip.downcase.start_with?("conflicto")
+    end
+  end
+
+  # Para una propuesta del componente Propuestas:
+  # [{ item: <"Conflicto N">, hijo: <hijo>, texto: "<título descriptivo>", proposal: <Proposal|nil> }]
+  def self.conflictos_de_propuesta(propuesta, componente_conflictos)
+    pacto_item = pacto_item_de(propuesta)
+    hijos = hijo_items_de(propuesta)
+    return [] unless pacto_item && hijos.any?
+
+    conf_items = hijos.map(&:parent).uniq
+    candidatos = Decidim::Proposals::Proposal
+                 .where(decidim_component_id: componente_conflictos.id, decidim_proposals_proposal_state_id: nil)
+                 .includes(:taxonomies)
+
+    conf_items.map do |item|
+      hijo = hijos.find { |h| h.parent_id == item.id }
+      proposal = candidatos.find { |p| (p.taxonomies.map(&:id) & [pacto_item.id, item.id]).length == 2 }
+      texto = proposal ? (proposal.title[I18n.locale.to_s].presence || proposal.title["es"]) : item.name["es"]
+      { item: item, hijo: hijo, texto: texto, proposal: proposal }
+    end
+  end
+
+  # Nº de propuestas (componente Propuestas) con el mismo pacto y alguno de los mismos hijos
+  def self.n_propuestas_relacionadas(propuesta, componente_propuestas)
+    pacto_item = pacto_item_de(propuesta)
+    hijo_ids = hijo_items_de(propuesta).map(&:id)
+    return 0 unless pacto_item && hijo_ids.any?
+
+    count_con_pacto_e_hijos(componente_propuestas, pacto_item.id, hijo_ids)
+  end
+
+  # Número de propuestas del componente Propuestas asociadas a un (pacto, conflicto) concreto
+  def self.propuestas_para_conflicto(conflicto, componente_propuestas)
+    pacto_item = pacto_item_de(conflicto)
+    item_conf = conflicto_item_de(conflicto)
     return 0 unless pacto_item && item_conf
 
     hijo_ids = item_conf.children.ids
     return 0 if hijo_ids.empty?
 
-    base = Decidim::Proposals::Proposal
-           .published.not_hidden
-           .where(decidim_component_id: componente_propuestas.id)
+    count_con_pacto_e_hijos(componente_propuestas, pacto_item.id, hijo_ids)
+  end
 
-    # Que tenga el Pacto del conflicto actual...
-    con_pacto = base.where(
-      id: Decidim::Proposals::Proposal
-        .joins(:taxonomies)
-        .where(decidim_taxonomies: { id: pacto_item.id })
-        .select(:id)
-    )
-
-    # ... Y uno de los items hijo ("Propuesta resolución conflicto N")
-    con_conflicto = con_pacto.where(
-      id: Decidim::Proposals::Proposal
-        .joins(:taxonomies)
-        .where(decidim_taxonomies: { id: hijo_ids })
-        .select(:id)
-    )
-
-    con_conflicto.count
+  def self.count_con_pacto_e_hijos(componente_propuestas, pacto_item_id, hijo_ids)
+    base = Decidim::Proposals::Proposal.published.not_hidden
+                                       .where(decidim_component_id: componente_propuestas.id)
+    base
+      .where(id: Decidim::Proposals::Proposal.joins(:taxonomies).where("decidim_taxonomies.id = ?", pacto_item_id).select(:id))
+      .where(id: Decidim::Proposals::Proposal.joins(:taxonomies).where("decidim_taxonomies.id IN (?)", hijo_ids).select(:id))
+      .count
   end
 end
