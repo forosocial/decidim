@@ -6,6 +6,8 @@ ca:
         sin_conflictos: "Sense conflictes"
         sin_propuestas: "Sense propostes encara"
         boton_nueva_propuesta: "Crear proposta per a aquest conflicte"
+        desplegar: "Mostrar o amagar el contingut actual"
+        desplegar_todo: "Desplegar-ho tot"
         estados:
           consensuada: "Actualment consensuada"
           accepted: "Acceptada"
@@ -21,6 +23,8 @@ en:
         sin_conflictos: "No conflicts"
         sin_propuestas: "No proposals yet"
         boton_nueva_propuesta: "Create a proposal for this conflict"
+        desplegar: "Show or hide the current content"
+        desplegar_todo: "Expand all"
         estados:
           consensuada: "Currently agreed"
           accepted: "Accepted"
@@ -36,6 +40,8 @@ es:
         sin_conflictos: "Sin conflictos"
         sin_propuestas: "Sin propuestas todavía"
         boton_nueva_propuesta: "Crear propuesta para este conflicto"
+        desplegar: "Mostrar u ocultar el contenido actual"
+        desplegar_todo: "Desplegar todo"
         estados:
           consensuada: "Actualmente consensuada"
           accepted: "Aceptada"
@@ -51,6 +57,8 @@ eu:
         sin_conflictos: "Ez dago gatazkarik"
         sin_propuestas: "Oraindik ez dago proposamenik"
         boton_nueva_propuesta: "Sortu proposamen bat gatazka honetarako"
+        desplegar: "Erakutsi edo ezkutatu uneko edukia"
+        desplegar_todo: "Zabaldu dena"
         estados:
           consensuada: "Unean ados"
           accepted: "Onartua"
@@ -66,6 +74,8 @@ gl:
         sin_conflictos: "Sen conflitos"
         sin_propuestas: "Sen propostas aínda"
         boton_nueva_propuesta: "Crear proposta para este conflito"
+        desplegar: "Mostrar ou agochar o contido actual"
+        desplegar_todo: "Despregar todo"
         estados:
           consensuada: "Actualmente consensuada"
           accepted: "Aceptada"

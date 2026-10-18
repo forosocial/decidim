@@ -10,7 +10,7 @@
 #   :aceptada       -> token 'accepted'
 #   :rechazada      -> token 'rejected'
 #   :evaluando      -> token 'evaluating'
-# Podeis poner varios, p.ej. %i[aceptada evaluando]
+# Pueden ponerse varios, p.ej. %i[aceptada evaluando]
 #
 # En PACTOS el mismo filtro decide DOS cosas: que ramas aparecen y que
 # botones de estado se pintan en la linea del pacto.

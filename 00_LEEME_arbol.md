@@ -36,6 +36,12 @@ No se toca ningun archivo del gem: **no hay que anadir checksums** a
   hojas es la union deduplicada por id de todos los records del conflicto).
 
 ## Renderizado
+- Agrupacion por padre: los pactos se agrupan bajo su item padre, con
+  "Pactos transversales" primero y "Pactos tematicos" despues (id de padre
+  DESCENDENTE — si el id real de "transversales" fuera menor que el de
+  "tematicos", invertir el sort en la vista). Pactos por id ascendente
+  dentro de cada rama. Las ramas padre son etiquetas sin enlace (clase
+  `arbol-node--grupo`). Ver ids con `Decidim::Taxonomy.where(parent_id: 1)`.
 - Un nodo por item "Conflicto N" (`group_by` por `conflicto_item.id`): los
   records del mismo conflicto (original, enmiendas, duplicados con el mismo
   par pacto/conflicto) aparecen en UNA linea, con un boton de estado por
@@ -43,6 +49,17 @@ No se toca ningun archivo del gem: **no hay que anadir checksums** a
 - Hojas: una linea por titulo (`group_by` por `title["es"]`); records con el
   mismo titulo agrupan sus botones. OJO: dos propuestas distintas con titulo
   exactamente igual se fusionarian visualmente.
+- Desplegable de body: cada nodo (pacto/conflicto/propuesta) lleva un icono
+  (checkbox hack CSS puro, sin JS; acumulativo y accesible) que muestra/oculta
+  el body de la proposal vigente (la sin estado, preferente). Helper
+  `desplegable_body(propuesta, sufijo:)` — el sufijo garantiza ids unicos por
+  ubicacion (una proposal multi-conflicto puede ser target en varios nodos).
+  NOTA: los input checkbox se ocultan con selector cualificado
+  (`.arbol-tree input.arbol-toggle-state`): Decidim estiliza
+  `input[type=checkbox]` con mas especificidad que una clase suelta.
+- Alternador global (arriba de todo): despliega/encoge TODOS los bodies con
+  CSS puro via `:has()` (Firefox 121+, Chromium 105+; sin JS). Mientras esta
+  activo, los desplegables individuales quedan anulados (se fuerza visible).
 - Regla de enlace/titulo: modo "solo consensuada" (filtro exactamente
   `[:sin_respuesta]`) -> sin botones y titulo enlazado; resto de modos ->
   titulo en texto plano y un boton por record con su enlace (sin redundancia

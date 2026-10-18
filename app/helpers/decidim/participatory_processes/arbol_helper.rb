@@ -55,9 +55,27 @@ module Decidim
       def etiqueta_estado(propuesta)
         estado = propuesta.state
         clave = estado.presence || "consensuada"
-        clase = CLASES_ESTADO[estado] || "label warning"
+        clase = CLASES_ESTADO[estado] || "label success"
         content_tag(:span, t("decidim.participatory_processes.arbol.estados.#{clave}", default: clave.to_s.humanize),
                     class: "#{clase} arbol-estado")
+      end
+
+      # Desplegable acumulativo de body (checkbox hack CSS puro, sin JS):
+      # un icono en el nodo que muestra/oculta el body de la proposal
+      # "vigente" (la sin estado, preferente) bajo el titulo. `sufijo` debe
+      # ser unico por ubicacion en la pagina (la misma proposal puede ser
+      # target en varios nodos: multi-conflicto).
+      def desplegable_body(propuesta, sufijo:)
+        return if propuesta.blank?
+
+        id_dom = "arbol-body-#{sufijo}-#{propuesta.id}"
+        cuerpo = decidim_sanitize(translated_attribute(propuesta.body))
+        safe_join([
+          tag.input(type: "checkbox", id: id_dom, class: "arbol-toggle-state"),
+          tag.label("▸", for: id_dom, class: "arbol-toggle",
+                    title: t("decidim.participatory_processes.arbol.desplegar", default: "Mostrar u ocultar el contenido")),
+          content_tag(:div, cuerpo, class: "arbol-cuerpo")
+        ])
       end
     end
   end
