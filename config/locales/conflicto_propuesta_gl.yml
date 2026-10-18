@@ -6,3 +6,5 @@ gl:
         ver_todas_propuestas_html: "Ver <strong>todas as Propuestas</strong> expostas para abordar este Conflito"
         ver_todos_conflictos_html: "Ver <strong>todos os Conflitos</strong> identificados deste Pacto"
         crear_propuesta_conflicto: "Crear proposta para abordar este conflito"
+        aborda_conflicto_html: "Esta proposta aborda o conflito:"
+        aborda_conflictos_html: "Esta proposta aborda os seguintes conflitos:"
