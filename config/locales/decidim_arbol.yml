@@ -9,7 +9,7 @@ ca:
         desplegar: "Mostrar o amagar el contingut actual"
         desplegar_todo: "Desplegar-ho tot"
         estados:
-          consensuada: "Actualment consensuada"
+          consensuada: "En vigor"
           accepted: "Acceptada"
           rejected: "Rebutjada"
           evaluating: "En avaluació"
@@ -26,7 +26,7 @@ en:
         desplegar: "Show or hide the current content"
         desplegar_todo: "Expand all"
         estados:
-          consensuada: "Currently agreed"
+          consensuada: "In force"
           accepted: "Accepted"
           rejected: "Rejected"
           evaluating: "Under evaluation"
@@ -43,7 +43,7 @@ es:
         desplegar: "Mostrar u ocultar el contenido actual"
         desplegar_todo: "Desplegar todo"
         estados:
-          consensuada: "Actualmente consensuada"
+          consensuada: "En vigor"
           accepted: "Aceptada"
           rejected: "Rechazada"
           evaluating: "En evaluación"
@@ -60,7 +60,7 @@ eu:
         desplegar: "Erakutsi edo ezkutatu uneko edukia"
         desplegar_todo: "Zabaldu dena"
         estados:
-          consensuada: "Unean ados"
+          consensuada: "Indarrean"
           accepted: "Onartua"
           rejected: "Baztertua"
           evaluating: "Ebaluazioan"
@@ -77,7 +77,7 @@ gl:
         desplegar: "Mostrar ou agochar o contido actual"
         desplegar_todo: "Despregar todo"
         estados:
-          consensuada: "Actualmente consensuada"
+          consensuada: "En vigor"
           accepted: "Aceptada"
           rejected: "Rexeitada"
           evaluating: "En avaliación"

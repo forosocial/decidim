@@ -24,13 +24,13 @@
 module ArbolConfig
   # proposals del componente "Pactos": filtran que RAMAS aparecen y que
   # BOTONES se pintan en la linea del pacto
-  ESTADOS_PACTOS = [:sin_respuesta].freeze
+  ESTADOS_PACTOS = [:sin_respuesta, :evaluando].freeze
 
   # proposals del componente "Conflictos": el SEGUNDO nivel del arbol
-  ESTADOS_CONFLICTOS = [:sin_respuesta].freeze
+  ESTADOS_CONFLICTOS = [:todas].freeze
 
   # proposals del componente "Propuestas": las HOJAS del arbol
-  ESTADOS_PROPUESTAS = [:sin_respuesta].freeze
+  ESTADOS_PROPUESTAS = [:todas].freeze
 
   # orden canonico de los botones de estado en cada linea
   ORDEN_ESTADOS = %w(consensuada accepted evaluating rejected not_answered withdrawn).freeze
