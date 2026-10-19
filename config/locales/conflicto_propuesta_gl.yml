@@ -8,3 +8,4 @@ gl:
         crear_propuesta_conflicto: "Crear proposta para abordar este conflito"
         aborda_conflicto_html: "Esta proposta aborda o conflito:"
         aborda_conflictos_html: "Esta proposta aborda os seguintes conflitos:"
+        sin_propuestas_html: "Este conflito aínda non ten propostas"

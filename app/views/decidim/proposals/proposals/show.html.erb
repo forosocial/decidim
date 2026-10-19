@@ -61,27 +61,7 @@ extra_admin_link(
       <h1 class="h2 decorator"><%= present(@proposal).title(html_escape: true) %></h1>
     <% end %>
     
-    <%# -------------------------- %>
-    <%# Nuevo botón insertado aquí %>
-    <%# -------------------------- %>
-
-    <%# Oculta o muestra el botón en función del rol del usuario %>
-    <% if current_user&.admin? &&
-      (pre_ids = ConflictoMapper.preseleccion_para(@proposal)) &&
-      (comp_propuestas = ConflictoMapper.componente_propuestas(current_component)) %>
-      <div class="layout-main__section">
-        
-        <%= link_to t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides"),
-            Decidim::EngineRouter.admin_proxy(comp_propuestas).new_proposal_path(pre_taxonomies: pre_ids),
-            class: "button button__sm button__secondary",
-            target: "_blank", rel: "noopener" %>
-
-      </div>
-    <% end %>
     
-    <%# -------------------------- %>
-    <%# Fin de las modificación  %>
-    <%# -------------------------- %>
 
     <% unless component_settings.participatory_texts_enabled? %>
       <% unless ["section","subsection"].include?(@proposal.participatory_text_level) %>
@@ -180,8 +160,8 @@ extra_admin_link(
     <% item_conf = ConflictoMapper.conflicto_item_de(@proposal) %>
     <% es_conflicto = item_conf.present? && item_conf.parent_id == ConflictoMapper.raiz(item_conf).id %>
     <% if componente_actual == id_componente_conflictos && es_conflicto && comp_propuestas %>
-      <div class="flash flex-col warning">  
-        <% n = ConflictoMapper.propuestas_para_conflicto(@proposal, comp_propuestas) %>
+      <% n = ConflictoMapper.propuestas_para_conflicto(@proposal, comp_propuestas) %>
+      <div class="flash flex-col warning">
         <% if n.positive? %>
           <% conflicto_root_id = ConflictoMapper.raiz(item_conf).id %>
           <% query = { filter: { with_any_state: ["state_not_published"],
@@ -189,8 +169,34 @@ extra_admin_link(
                                                         conflicto_root_id => item_conf.children.ids } } }.to_query %>
           <%= link_to t("ver_todas_propuestas_html", scope: "decidim.conflicto_propuesta.overrides") ,
                 "#{main_component_path(comp_propuestas)}?#{query}", target: "_blank", rel: "noopener noreferrer" %>
+                
+        <% else %>
+          <%= t("sin_propuestas_html", scope: "decidim.conflicto_propuesta.overrides") %>
         <% end %>
-      </div>  
+      </div>
+      
+      <%# -------------------------- %>
+      <%# Nuevo botón insertado aquí %>
+      <%# -------------------------- %>
+
+      <%# Oculta o muestra el botón en función del rol del usuario %>
+      <% if current_user&.admin? &&
+        (pre_ids = ConflictoMapper.preseleccion_para(@proposal)) &&
+        (comp_propuestas = ConflictoMapper.componente_propuestas(current_component)) %>
+        <div class="layout-main__section">
+          
+          <%= link_to t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides"),
+              Decidim::EngineRouter.admin_proxy(comp_propuestas).new_proposal_path(pre_taxonomies: pre_ids),
+              class: "button button__sm button__secondary",
+              target: "_blank", rel: "noopener" %>
+
+        </div>
+      <% end %>
+      
+      <%# -------------------------- %>
+      <%# Fin de las modificación  %>
+      <%# -------------------------- %>
+
     <% end %>
 
     <div class="flash flex-col warning">

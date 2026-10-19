@@ -8,3 +8,4 @@ ca:
         crear_propuesta_conflicto: "Crear proposta per abordar aquest conflicte"
         aborda_conflicto_html: "Aquesta proposta aborda el conflicte:"
         aborda_conflictos_html: "Aquesta proposta aborda els conflictes:"
+        sin_propuestas_html: "Aquest conflicte encara no té propostes"

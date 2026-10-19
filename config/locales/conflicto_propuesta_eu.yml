@@ -8,3 +8,4 @@ eu:
         crear_propuesta_conflicto: "Sortu proposamena gatazka hau lantzeko"
         aborda_conflicto_html: "Proposamen honek gatazkari aurre egiten dio:"
         aborda_conflictos_html: "Proposamen honek gatazka hauek konpontzen ditu:"
+        sin_propuestas_html: "Gatazka honek ez du proposamenik oraindik"
