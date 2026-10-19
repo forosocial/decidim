@@ -8,3 +8,4 @@ en:
         crear_propuesta_conflicto: "Create a proposal to address this conflict"
         aborda_conflicto_html: "This proposal addresses the conflict:"
         aborda_conflictos_html: "This proposal addresses the following conflicts:"
+        sin_propuestas_html: "This conflict has no proposals yet"

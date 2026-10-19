@@ -8,3 +8,4 @@ es:
         crear_propuesta_conflicto: "Crear propuesta para abordar este conflicto"
         aborda_conflicto_html: "Esta propuesta aborda el conflicto:"
         aborda_conflictos_html: "Esta propuesta aborda los conflictos:"
+        sin_propuestas_html: "Este conflicto no tiene propuestas todavía"
