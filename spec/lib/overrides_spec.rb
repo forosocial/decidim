@@ -1,5 +1,6 @@
 # spec/lib/overrides_spec.rb
 # frozen_string_literal: true
+
 # Basado en https://github.com/Som-Energia/decidim-som-energia-app/blob/main/spec/lib/overrides_spec.rb
 require "rails_helper"
 require "digest"
@@ -104,7 +105,13 @@ OVERRIDES = {
     # cadenas mal escrita en euskera. Usa %{amendable_link}/%{announcement_date}
     # en vez de %{proposal_link}/%{date}, provocando "missing interpolation
     # argument" al ver una enmienda rechazada con idioma euskera activo.
-    "config/locales/eu.yml" => "447b0c63fb8e9ccb756aeba7e8ccc282"
+    "config/locales/eu.yml" => "447b0c63fb8e9ccb756aeba7e8ccc282",
+
+    # Override: app/cells/decidim/author/date.erb
+    # Motivo: Cuando una propuesta proviene de un encuentro en la celda author
+    # aparece la fecha en la que el admin incluyó la propuesta, sin embargo pareció
+    # más conveniente incluir la fecha del encuentro.
+    "app/cells/decidim/author/date.erb" => "74247137bc28a6c851b8713c83cb9791"
   },
 
   "decidim-decidim_awesome" => {
@@ -114,7 +121,7 @@ OVERRIDES = {
     # correcto donde aplicar el fix.
     "app/helpers/concerns/decidim/decidim_awesome/amendments_helper_override.rb" => "875761b6e8e7d7b45bbdd339609f4fd9"
   },
-  
+
   "decidim-proposals" => {
     # Override: config/initializers/proposals_default_states_override.rb
     # Motivo: ProposalsController#default_states marca por defecto en el
@@ -130,7 +137,7 @@ OVERRIDES = {
     # Revisar ambos en caso de cambio.
 
     "app/controllers/decidim/proposals/proposals_controller.rb" => "92bf9b32eb4968b6ad71c1711e4750d2",
-    
+
     # Override: app/views/decidim/proposals/admin/proposals/_form.html.erb
     # Motivo: Cambiar el formulario de ceación de las proposas Propuestas para que
     # en lugar de mostrar "Conflicto N" muestre el título del Conflicto del Pacto
@@ -146,9 +153,9 @@ OVERRIDES = {
     # pero es la señal de revisar que taxonomies y current_component siguen existiendo.
     "app/views/decidim/proposals/admin/proposals/_form.html.erb" => "3c6d2675fa774c888150dc8da494fee0",
     "app/forms/decidim/proposals/admin/proposal_form.rb" => "c222792947e0bac2cd4869adb5ce13bb",
-    
+
     # Override: app/views/decidim/proposals/proposals/show.html.erb
-    # Motivo: Creación de un botón "Crear propuesta para este conflicto" visible 
+    # Motivo: Creación de un botón "Crear propuesta para este conflicto" visible
     # sólo para administradores y que abre en una nueva pestaña para incluir una nueva
     # Propuesta en la que ya incluye la selección adecuada de Pacto y Conflicto.
     "app/views/decidim/proposals/proposals/show.html.erb" => "e2c0adf5c283f7396d93207e1b7ab740"

@@ -1,0 +1,10 @@
+<%#
+Al estar en la cell del autor, el arreglo aplica dondequiera que Decidim pinte la fecha junto al autor: la ficha de la propuesta, las tarjetas (M-card), etc.
+En nuestro caso loo usamos para cuando se muestra que el origen de una propuesta es la de un encuentro
+En el caso de tratarse de un encuentro, la fecha se fija en la fecha del encuentro
+%>
+<span class="author__metadata">
+  <%= icon "calendar-line" if show_icons? %>
+  <% meeting = from_context.respond_to?(:authors) && from_context.authors.find { |a| a.is_a?(Decidim::Meetings::Meeting) } %>
+  <%= meeting ? l(meeting.start_time, format: :decidim_short) : creation_date %>
+</span>
