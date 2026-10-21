@@ -173,4 +173,17 @@ class ConflictoMapper
       .where(id: Decidim::Proposals::Proposal.joins(:taxonomies).where("decidim_taxonomies.id IN (?)", hijo_ids).select(:id))
       .count
   end
+
+  # Texto de fecha de un encuentro, sin hora: día único "18/10/2026"
+  # o rango "17/10/2026 – 18/10/2026" si cruza de día
+  # Se usa en app/cells/decidim/author/date.erb
+  #      y en config/initializers/historial_fecha_encuentros.rb
+  def self.fecha_encuentro(meeting)
+    fmt = "%d/%m/%Y"
+    if meeting.start_time.to_date == meeting.end_time.to_date
+      I18n.l(meeting.start_time, format: fmt)
+    else
+      "#{I18n.l(meeting.start_time, format: fmt)} – #{I18n.l(meeting.end_time, format: fmt)}"
+    end
+  end
 end

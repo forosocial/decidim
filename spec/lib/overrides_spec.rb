@@ -62,7 +62,6 @@ OVERRIDES = {
     # Cuando haya traducciones reales disponibles para algún idioma, revisar
     # si este override sigue siendo necesario o hay que sustituirlo por una
     # detección más fina (idioma real del contenido en vez de 'es' fijo).
-    #
     "app/commands/decidim/amendable/create_draft.rb" => "6dab877c9ad517bce2474d45cb68b339",
     "app/commands/decidim/amendable/update_draft.rb" => "b1aa9bbc241174f4d3e0b64acb376b50",
     "app/commands/decidim/amendable/accept.rb" => "8b72f8a77140573a89724b33db4840b4",
@@ -80,7 +79,6 @@ OVERRIDES = {
     # Para que surta efecto tras la implementación de este override ha sido necesario
     # Limpiar caché de Redis para que los registros se rerenderizen ya
     # RAILS_ENV=production bundle exec rails runner "Rails.cache.clear"
-    #
     "app/cells/decidim/activity_cell.rb" => "e2345598669f6312f17ee964950a83bc",
 
     # Override de traducción: config/locales/gl.yml
@@ -111,7 +109,22 @@ OVERRIDES = {
     # Motivo: Cuando una propuesta proviene de un encuentro en la celda author
     # aparece la fecha en la que el admin incluyó la propuesta, sin embargo pareció
     # más conveniente incluir la fecha del encuentro.
-    "app/cells/decidim/author/date.erb" => "74247137bc28a6c851b8713c83cb9791"
+    "app/cells/decidim/author/date.erb" => "74247137bc28a6c851b8713c83cb9791",
+
+    # Override: app/cells/decidim/resource_history_cell.rb
+    # Motivo: En Decidim::ResourceHistoryCell#add_linked_resources_items, la fecha de
+    # cada item enlazado se calcula así:
+    # date = resource.respond_to?(:published_at) ? resource.published_at : resource.updated_at
+    # Para un meeting eso toma su published_at (el sello de publicación del registro,
+    # que coincide con cuando se configuró, no la fecha del evento
+    # La cell no tiene ningún tratamiento específico para encuentros, y como el cálculo se hace
+    # en el Ruby del cell (no en la vista show.erb), el fix es un prepend en el nuevo initializer
+    "app/cells/decidim/resource_history_cell.rb" => "24117f57240d6465ca6a280767dfe84e",
+
+    # Override: app/cells/decidim/resource_history/show.erb"
+    # Motivo: Que4remos que en el historial se muestre el formato sin hora para los encuentros
+    # y además si los encuentros duran más de un día se muestre las fechas inicial y final
+    "app/cells/decidim/resource_history/show.erb" => "b11e8ce495ec1c661644dca2f669c4ca"
   },
 
   "decidim-decidim_awesome" => {
@@ -135,7 +148,6 @@ OVERRIDES = {
     # Tambien:
     # Override: app/services/conflicto_mapper.rb
     # Revisar ambos en caso de cambio.
-
     "app/controllers/decidim/proposals/proposals_controller.rb" => "92bf9b32eb4968b6ad71c1711e4750d2",
 
     # Override: app/views/decidim/proposals/admin/proposals/_form.html.erb

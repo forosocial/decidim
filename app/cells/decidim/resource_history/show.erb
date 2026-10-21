@@ -1,0 +1,25 @@
+<%# app/cells/decidim/resource_history/show.erb %>
+<%# El fallback item[:date].strftime(...) mantiene el formato 
+<%# con hora para el resto de items (creación de la propuesta, versiones, etc.) 
+— solo los encuentros se muestran sin hora y con rango si aplica. %>
+
+<ul class="resource_history">
+  <% history_items.each_with_index do |item, index| %>
+    <li class="resource_history__item">
+      <div class="resource_history__item_icon">
+        <div class="<%= item[:id] == "#{history_cell_id}_creation" ? "resource_history__item_icon-creation" : "" %>">
+          <%= icon item[:icon], class: item[:id] == "#{history_cell_id}_creation" ? "fill-current text-white" : "fill-current text-secondary" %>
+        </div>
+      </div>
+      <div class="resource_history__item_content">
+        <span class="resource_history__item_date"><%= item[:display_date] || item[:date].strftime("%d/%m/%Y %H:%M") %></span>
+        <p class="resource_history_text">
+          <%= item[:text] %>
+          <% if index < history_items.size - 1 %>
+            <span class="resource_history__line"></span>
+          <% end %>
+        </p>
+      </div>
+    </li>
+  <% end %>
+</ul>
