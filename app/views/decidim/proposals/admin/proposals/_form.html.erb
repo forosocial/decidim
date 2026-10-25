@@ -113,6 +113,14 @@
 
       <%# ---- ---- ---- ---- ---- ---- ---- -- ---- %>
       <%# ---- Fin de nuevo fragmento           ---- %>
+      
+      <%# Render nativo de los filtros NO custom (p.ej. "Grupos") %>
+      <% no_custom = (@form.taxonomy_filters || []).reject { |f| [pacto_filter, conflicto_filter].include?(f) } %>
+      <% no_custom.each do |filter| %>
+        <div class="row column">
+          <%= filter_taxonomy_items_select_field form, :taxonomies, filter %>
+        </div>
+      <% end %>
 
       <% if component_settings.attachments_allowed? %>
         <div class="row column">

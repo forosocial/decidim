@@ -1,0 +1,12 @@
+<%# app/views/decidim/proposals/admin/agrupaciones/new.html.erb %>
+
+<h2 class="h3 decorator"><%= t(".titulo") %></h2>
+
+<%= decidim_form_for(@form, url: router_agrupaciones.grupos_path,
+                     html: { class: "form form-defaults" }) do |form| %>
+  <%= render "form", form: form, items_pacto: items_pacto,
+             propuestas_opciones: propuestas_opciones %>
+  <div class="button--double form-general-submit">
+    <%= form.submit t(".crear") %>
+  </div>
+<% end %>

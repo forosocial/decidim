@@ -1,0 +1,51 @@
+# config/locales/agrupaciones.gl.yml
+# Galego
+
+gl:
+  activemodel:
+    attributes:
+      agrupacion:
+        nombre: "Nome do grupo"
+        proposal_ids: "Propostas"
+  decidim:
+    proposals:
+      admin:
+        menu:
+          agrupaciones: "Agrupacións de propostas"
+        agrupaciones:
+          index:
+            titulo: "Agrupacións de propostas"
+            nueva: "Nova agrupación"
+            vacio: "Aínda non hai agrupacións. Crea a primeira co botón «Nova agrupación»."
+            tabla:
+              nombre: "Nome"
+              propuestas: "Propostas"
+              acciones: "Accións"
+            ver_publico: "Ver no frontend"
+            editar: "Editar"
+            borrar: "Eliminar"
+            confirmar_borrado: "Estás seguro? As propostas quedarán desvinculadas do grupo (as propostas non se eliminan)."
+          form:
+            titulo: "Datos da agrupación"
+            filtro_pacto: "Filtrar por pacto"
+            todos_los_pactos: "Todos os pactos"
+            propuestas: "Propostas do grupo"
+            buscar: "Buscar por título…"
+            ayuda_propuestas: "Selecciona unha ou varias propostas. O filtro de pacto e a busca só agochan opcións; as propostas que xa son membros están sempre visíbeis."
+          new:
+            titulo: "Nova agrupación de propostas"
+            crear: "Crear agrupación"
+          edit:
+            titulo: "Editar agrupación de propostas"
+            guardar: "Gardar cambios"
+          create:
+            exito: "Agrupación «%{nombre}» creada."
+            error: "Non se puido crear a agrupación. Revisa o formulario."
+          update:
+            exito: "Agrupación «%{nombre}» actualizada."
+            error: "Non se puido actualizar a agrupación. Revisa o formulario."
+          destroy:
+            exito: "Agrupación «%{nombre}» eliminada."
+      proposals:
+        show:
+          ver_relacionadas: "Ver propostas relacionadas: %{grupo}"

@@ -1,0 +1,49 @@
+<%# app/views/decidim/proposals/admin/agrupaciones/index.html.erb %>
+
+<div class="card">
+  <div class="card-divider flex justify-between items-center">
+    <h2 class="card-title"><%= t(".titulo") %></h2>
+    <%= link_to t(".nueva"), router_agrupaciones.new_grupo_path,
+                class: "button button__sm button__secondary" %>
+  </div>
+
+  <div class="card-section">
+    <% if grupos.empty? %>
+      <p><%= t(".vacio") %></p>
+    <% else %>
+      <table class="table-list">
+        <thead>
+          <tr>
+            <th><%= t(".tabla.nombre") %></th>
+            <th><%= t(".tabla.propuestas") %></th>
+            <th><%= t(".tabla.acciones") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% grupos.each do |g| %>
+            <tr>
+              <td><%= g.name[I18n.locale.to_s].presence || g.name["es"] %></td>
+              <td><%= conteos[g.id] || 0 %></td>
+              <td class="table-list__actions">
+                <%= link_to t(".ver_publico"),
+                    router_publico.proposals_path(
+                      filter: { with_any_taxonomies: { ConflictoMapper.raiz_agrupaciones.id => [g.id] } }),
+                      class: "button button__sm button__transparent-secondary" %>
+              </td>
+              <td class="table-list__actions">
+                <%= link_to t(".editar"), router_agrupaciones.edit_grupo_path(g),
+                    class: "button button__sm button__transparent-secondary" %>
+              </td>
+              <td class="table-list__actions">
+                <%= button_to t(".borrar"), router_agrupaciones.grupo_path(g),
+                    method: :delete,
+                    data: { confirm: t(".confirmar_borrado") },
+                    class: "button button__sm button__transparent-secondary" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

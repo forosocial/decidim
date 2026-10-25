@@ -1,0 +1,68 @@
+<%# app/views/decidim/proposals/admin/agrupaciones/_form.html.erb %>
+<%# locals: form, items_pacto, propuestas_opciones %>
+
+<div class="form__wrapper">
+  <div class="card">
+    <div class="card-divider">
+      <h2 class="card-title"><%= t(".titulo") %></h2>
+    </div>
+    <div class="card-section">
+      <div class="row column">
+        <%= form.translated :text_field, :nombre,
+                            data: { controller: "character-counter",
+                            character_counter_limit_value: ConflictoMapper::LIMITE_NOMBRE_GRUPO } %>
+      </div>
+
+      <div class="row column">
+        <label for="agrupacion_filtro_pacto"><%= t(".filtro_pacto") %></label>
+        <%= select_tag :pacto_item_id,
+              options_from_collection_for_select(
+                items_pacto, :id, ->(i) { i.name["es"].to_s }, form.object.pacto_item_id),
+              include_blank: t(".todos_los_pactos"),
+              id: "agrupacion_filtro_pacto" %>
+      </div>
+
+      <div class="row column">
+        <%= form.label :proposal_ids, t(".propuestas") %>
+        <input type="text" id="agrupacion_busqueda" class="input-group-field"
+               placeholder="<%= t(".buscar") %>">
+        <%= form.select :proposal_ids,
+              options_for_select(
+                propuestas_opciones.map do |o|
+                  [o[:title], o[:id],
+                   { data: { pacto: o[:pacto_id].to_s, miembro: o[:miembro] ? "1" : "0" } }]
+                end,
+                form.object.proposal_ids),
+              {}, multiple: true, size: 15, id: "agrupacion_proposal_ids" %>
+        <p class="help-text"><%= t(".ayuda_propuestas") %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Filtro en cliente por pacto y por texto. Las propuestas ya miembros
+  // del grupo (data-miembro="1") se mantienen SIEMPRE visibles aunque no
+  // coincidan con el filtro: si se ocultaran y se guarda, se perderian
+  // miembros de otros pactos.
+  document.addEventListener("DOMContentLoaded", function () {
+    var pacto = document.getElementById("agrupacion_filtro_pacto");
+    var busqueda = document.getElementById("agrupacion_busqueda");
+    var select = document.getElementById("agrupacion_proposal_ids");
+    if (!select) return;
+
+    function aplicar() {
+      var pid = pacto.value;
+      var q = busqueda.value.toLowerCase();
+      Array.prototype.forEach.call(select.options, function (opt) {
+        var coincidePacto = pid === "" || opt.dataset.pacto === pid;
+        var coincideTexto = q === "" || opt.text.toLowerCase().indexOf(q) !== -1;
+        opt.hidden = !(coincidePacto && coincideTexto) && opt.dataset.miembro !== "1";
+      });
+    }
+
+    pacto.addEventListener("change", aplicar);
+    busqueda.addEventListener("input", aplicar);
+    aplicar();
+  });
+</script>

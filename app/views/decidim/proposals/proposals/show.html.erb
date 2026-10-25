@@ -131,29 +131,36 @@ extra_admin_link(
           .where("decidim_taxonomies.id = ?", tax_pacto_id)
           .first %>
 
-      <%# ---- Página de PROPUESTA: lista de conflictos (multi) ---- %>
-      <% if componente_actual == id_componente_propuestas && comp_conflictos %>
-      
-        <% relacionados = ConflictoMapper.conflictos_de_propuesta(@proposal, comp_conflictos) %>
-        <% if relacionados.any? %>
+    <%# ---- Página de PROPUESTA: lista de conflictos (multi) ---- %>
+    <% if componente_actual == id_componente_propuestas && comp_conflictos %>
         
-          <div>
-            <%= relacionados.one? ? t("aborda_conflicto_html", scope: "decidim.conflicto_propuesta.overrides") : t("aborda_conflictos_html", scope: "decidim.conflicto_propuesta.overrides") %>
-          </div>
-
-          <div class="flash flex-col warning">
-            <% relacionados.each do |conf| %>
-              <h2 class="h4 flex items-center gap 2 mb-4">
-                <% if conf[:proposal] %>
-                  <%= link_to conf[:texto], resource_locator(conf[:proposal]).path, target: "_blank", rel: "noopener noreferrer" %>
-                <% else %>
-                  <%= conf[:texto] %>
-                <% end %>
-              </h2>
-            <% end %>
-          </div>
-        <% end %>
+      <% ConflictoMapper.grupos_de(@proposal).each do |grupo_item| %>
+      <%# Caso de existir propuestas relacionadas con esta propuesta %>
+        <%= link_to t("decidim.proposals.proposals.show.ver_relacionadas", grupo: grupo_item.name["es"]),
+            Decidim::EngineRouter.main_proxy(current_component).proposals_path(
+              filter: { with_any_taxonomies: { ConflictoMapper.raiz_agrupaciones.id => [grupo_item.id] } }) %>
       <% end %>
+    
+      <% aborda_conflictos = ConflictoMapper.conflictos_de_propuesta(@proposal, comp_conflictos) %>
+      <% if aborda_conflictos.any? %>
+      
+        <div>
+          <%= aborda_conflictos.one? ? t("aborda_conflicto_html", scope: "decidim.conflicto_propuesta.overrides") : t("aborda_conflictos_html", scope: "decidim.conflicto_propuesta.overrides") %>
+        </div>
+
+        <div class="flash flex-col warning">
+          <% aborda_conflictos.each do |conf| %>
+            <h2 class="h4 flex items-center gap 2 mb-4">
+              <% if conf[:proposal] %>
+                <%= link_to conf[:texto], resource_locator(conf[:proposal]).path, target: "_blank", rel: "noopener noreferrer" %>
+              <% else %>
+                <%= conf[:texto] %>
+              <% end %>
+            </h2>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
 
     
     <%# ---- Página de CONFLICTO: enlace a sus propuestas ---- %>

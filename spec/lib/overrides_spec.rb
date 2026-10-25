@@ -170,7 +170,11 @@ OVERRIDES = {
     # Motivo: Creación de un botón "Crear propuesta para este conflicto" visible
     # sólo para administradores y que abre en una nueva pestaña para incluir una nueva
     # Propuesta en la que ya incluye la selección adecuada de Pacto y Conflicto.
-    "app/views/decidim/proposals/proposals/show.html.erb" => "e2c0adf5c283f7396d93207e1b7ab740"
+    "app/views/decidim/proposals/proposals/show.html.erb" => "e2c0adf5c283f7396d93207e1b7ab740",
+
+    # Override: app/views/decidim/proposals/admin/proposals/index.html.erb
+    # Motivo: Inclusión de nuevo elemento del menú "agrupaciones de propuestas".
+    "app/views/decidim/proposals/admin/proposals/index.html.erb" => "be85d4fb783a9a66f48d13c26379e7b6"
   }
 }.freeze
 RSpec.describe "Decidim overrides" do

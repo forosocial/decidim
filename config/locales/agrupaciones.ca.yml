@@ -1,0 +1,51 @@
+# config/locales/agrupaciones.ca.yml
+# Català
+
+ca:
+  activemodel:
+    attributes:
+      agrupacion:
+        nombre: "Nom del grup"
+        proposal_ids: "Propostes"
+  decidim:
+    proposals:
+      admin:
+        menu:
+          agrupaciones: "Agrupacions de propostes"
+        agrupaciones:
+          index:
+            titulo: "Agrupacions de propostes"
+            nueva: "Nova agrupació"
+            vacio: "Encara no hi ha agrupacions. Crea la primera amb el botó «Nova agrupació»."
+            tabla:
+              nombre: "Nom"
+              propuestas: "Propostes"
+              acciones: "Accions"
+            ver_publico: "Veure al frontend"
+            editar: "Editar"
+            borrar: "Eliminar"
+            confirmar_borrado: "N'estàs segur? Les propostes quedaran desvinculades del grup (les propostes no s'eliminen)."
+          form:
+            titulo: "Dades de l'agrupació"
+            filtro_pacto: "Filtrar per pacte"
+            todos_los_pactos: "Tots els pactes"
+            propuestas: "Propostes del grup"
+            buscar: "Cercar per títol…"
+            ayuda_propuestas: "Selecciona una o més propostes. El filtre de pacte i la cerca només amaguen opcions; les propostes que ja són membres sempre són visibles."
+          new:
+            titulo: "Nova agrupació de propostes"
+            crear: "Crear agrupació"
+          edit:
+            titulo: "Editar agrupació de propostes"
+            guardar: "Desar canvis"
+          create:
+            exito: "Agrupació «%{nombre}» creada."
+            error: "No s'ha pogut crear l'agrupació. Revisa el formulari."
+          update:
+            exito: "Agrupació «%{nombre}» actualitzada."
+            error: "No s'ha pogut actualitzar l'agrupació. Revisa el formulari."
+          destroy:
+            exito: "Agrupació «%{nombre}» eliminada."
+      proposals:
+        show:
+          ver_relacionadas: "Veure propostes relacionades: %{grupo}"

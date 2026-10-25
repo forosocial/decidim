@@ -1,0 +1,52 @@
+# config/locales/agrupaciones.en.yml
+# English template: review/adjust the texts marked with TODO before
+# enabling the locale.
+
+en:
+  activemodel:
+    attributes:
+      agrupacion:
+        nombre: "Group name" # TODO: review
+        proposal_ids: "Proposals"
+  decidim:
+    proposals:
+      admin:
+        menu:
+          agrupaciones: "Proposal groups" # TODO: review
+        agrupaciones:
+          index:
+            titulo: "Proposal groups"
+            nueva: "New group"
+            vacio: "No groups yet. Create the first one with the “New group” button."
+            tabla:
+              nombre: "Name"
+              propuestas: "Proposals"
+              acciones: "Actions"
+            ver_publico: "View in the frontend"
+            editar: "Edit"
+            borrar: "Delete"
+            confirmar_borrado: "Are you sure? Proposals will be unlinked from the group (proposals are not deleted)."
+          form:
+            titulo: "Group details"
+            filtro_pacto: "Filter by pact"
+            todos_los_pactos: "All pacts"
+            propuestas: "Proposals in the group"
+            buscar: "Search by title…"
+            ayuda_propuestas: "Select one or more proposals. The pact filter and the search only hide options; proposals already in the group are always visible."
+          new:
+            titulo: "New proposal group"
+            crear: "Create group"
+          edit:
+            titulo: "Edit proposal group"
+            guardar: "Save changes"
+          create:
+            exito: "Group “%{nombre}” created."
+            error: "Could not create the group. Check the form."
+          update:
+            exito: "Group “%{nombre}” updated."
+            error: "Could not update the group. Check the form."
+          destroy:
+            exito: "Group “%{nombre}” deleted."
+      proposals:
+        show:
+          ver_relacionadas: "View related proposals: %{grupo}"
