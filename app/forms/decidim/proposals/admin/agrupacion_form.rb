@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# app/forms/decidim/proposals/admin/agrupacion_form.rb
+
 module Decidim
   module Proposals
     module Admin
@@ -20,7 +22,7 @@ module Decidim
         # que form.translated espera; los setters fusionan cada locale en
         # el hash.
         translatable_attribute :nombre, String
-        attribute :proposal_ids, Array[Integer]
+        attribute :proposal_ids, [Integer]
         attribute :pacto_item_id, Integer
 
         validates :nombre, translatable_presence: true
@@ -29,13 +31,19 @@ module Decidim
 
         private
 
+        # El error se anota en el atributo concreto (nombre_es, nombre_ca...),
+        # que es el que renderiza form.translated: asi Decidim pinta el campo
+        # en rojo y muestra el mensaje inline. Si se anota en :nombre (el
+        # hash) solo se ve el flash generico.
         def nombre_dentro_del_limite
-          (nombre || {}).each_value do |valor|
+          (nombre || {}).each do |locale, valor|
             next if valor.blank?
 
-            if valor.length > ConflictoMapper::LIMITE_NOMBRE_GRUPO
-              errors.add(:nombre, :too_long, count: ConflictoMapper::LIMITE_NOMBRE_GRUPO)
-            end
+            next unless valor.length > ConflictoMapper::LIMITE_NOMBRE_GRUPO
+
+            errors.add(:"nombre_#{locale}", :nombre_too_long,
+                       count: ConflictoMapper::LIMITE_NOMBRE_GRUPO,
+                       actual: valor.length)
           end
         end
       end

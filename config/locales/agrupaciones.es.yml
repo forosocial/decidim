@@ -1,6 +1,11 @@
 # config/locales/agrupaciones.es.yml
+# Mergear con el es.yml existente del proyecto (o renombrar a es.yml si
+# se prefiere un solo fichero por idioma).
 
 es:
+  errors:
+    messages:
+      nombre_too_long: "no puede superar los %{count} caracteres (tiene %{actual})"
   activemodel:
     attributes:
       agrupacion:
@@ -14,7 +19,7 @@ es:
         agrupaciones:
           index:
             titulo: "Agrupaciones de propuestas"
-            nueva: "Añadir agrupación"
+            nueva: "Nueva agrupación"
             vacio: "Aún no hay agrupaciones. Crea la primera con el botón «Nueva agrupación»."
             tabla:
               nombre: "Nombre"
@@ -26,6 +31,7 @@ es:
             confirmar_borrado: "¿Seguro? Las propuestas quedarán desvinculadas del grupo (las propuestas no se borran)."
           form:
             titulo: "Datos de la agrupación"
+            ayuda_nombre: "Máximo %{max} caracteres."
             filtro_pacto: "Filtrar por pacto"
             todos_los_pactos: "Todos los pactos"
             propuestas: "Propuestas del grupo"

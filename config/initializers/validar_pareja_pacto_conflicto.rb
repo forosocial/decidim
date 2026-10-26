@@ -5,7 +5,6 @@
 Rails.application.config.to_prepare do
   module ValidarParejaPactoConflicto
     def self.prepended(base)
-      base.validates :taxonomies, presence: true, if: :componente_con_filtros_pacto_conflicto?
       base.validate :presencia_pacto_y_conflicto
       base.validate :pareja_pacto_conflicto_valida
     end

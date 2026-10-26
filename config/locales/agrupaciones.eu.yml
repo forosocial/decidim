@@ -2,6 +2,9 @@
 # Euskara (siguiendo el glosario de Decidim: proposal -> iradokizuna)
 
 eu:
+  errors:
+    messages:
+      nombre_too_long: "ezin du %{count} karaktere baino gehiago izan (orain %{actual} ditu)"
   activemodel:
     attributes:
       agrupacion:
@@ -27,6 +30,7 @@ eu:
             confirmar_borrado: "Ziur zaude? Iradokizunak multzoarekin deslotuko dira (iradokizunak ez dira ezabatuko)."
           form:
             titulo: "Multzoaren datuak"
+            ayuda_nombre: "Gehienez %{max} karaktere."
             filtro_pacto: "Iragazi akordioaren arabera"
             todos_los_pactos: "Akordio guztiak"
             propuestas: "Multzoko iradokizunak"

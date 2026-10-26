@@ -2,6 +2,9 @@
 # Galego
 
 gl:
+  errors:
+    messages:
+      nombre_too_long: "non pode superar os %{count} caracteres (ten %{actual})"
   activemodel:
     attributes:
       agrupacion:
@@ -27,6 +30,7 @@ gl:
             confirmar_borrado: "Estás seguro? As propostas quedarán desvinculadas do grupo (as propostas non se eliminan)."
           form:
             titulo: "Datos da agrupación"
+            ayuda_nombre: "Máximo %{max} caracteres."
             filtro_pacto: "Filtrar por pacto"
             todos_los_pactos: "Todos os pactos"
             propuestas: "Propostas do grupo"

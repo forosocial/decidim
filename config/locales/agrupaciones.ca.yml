@@ -2,6 +2,9 @@
 # Català
 
 ca:
+  errors:
+    messages:
+      nombre_too_long: "no pot superar els %{count} caràcters (en té %{actual})"
   activemodel:
     attributes:
       agrupacion:
@@ -27,6 +30,7 @@ ca:
             confirmar_borrado: "N'estàs segur? Les propostes quedaran desvinculades del grup (les propostes no s'eliminen)."
           form:
             titulo: "Dades de l'agrupació"
+            ayuda_nombre: "Màxim %{max} caràcters."
             filtro_pacto: "Filtrar per pacte"
             todos_los_pactos: "Tots els pactes"
             propuestas: "Propostes del grup"

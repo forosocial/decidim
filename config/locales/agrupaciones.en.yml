@@ -3,6 +3,9 @@
 # enabling the locale.
 
 en:
+  errors:
+    messages:
+      nombre_too_long: "cannot exceed %{count} characters (currently %{actual})"
   activemodel:
     attributes:
       agrupacion:
@@ -28,6 +31,7 @@ en:
             confirmar_borrado: "Are you sure? Proposals will be unlinked from the group (proposals are not deleted)."
           form:
             titulo: "Group details"
+            ayuda_nombre: "Maximum %{max} characters."
             filtro_pacto: "Filter by pact"
             todos_los_pactos: "All pacts"
             propuestas: "Proposals in the group"

@@ -8,9 +8,13 @@
     </div>
     <div class="card-section">
       <div class="row column">
+        <%# character-counter es el patron actual de Decidim (maxlength esta
+            deprecado y ademas rompe con varios locales); el limite de 20 se
+            sigue aplicando en servidor (validacion del form object). %>
         <%= form.translated :text_field, :nombre,
                             data: { controller: "character-counter",
-                            character_counter_limit_value: ConflictoMapper::LIMITE_NOMBRE_GRUPO } %>
+                                    character_counter_limit_value: ConflictoMapper::LIMITE_NOMBRE_GRUPO } %>
+        <p class="help-text"><%= t(".ayuda_nombre", max: ConflictoMapper::LIMITE_NOMBRE_GRUPO) %></p>
       </div>
 
       <div class="row column">
