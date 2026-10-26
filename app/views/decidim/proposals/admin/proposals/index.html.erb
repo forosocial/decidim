@@ -1,0 +1,71 @@
+<%# app/views/decidim/proposals/admin/proposals/index.html.erb %>
+<%# OVERRIDE de decidim-proposals 0.31.4 %>
+<%# Cambio respecto al original: un botón "Agrupaciones de propuestas" en %>
+<%# la cabecera, junto al botón de estados (en 0.31.4 NO existe submenu %>
+<%# :admin_proposals_menu; la navegación interna del componente son %>
+<%# botones de cabecera). Añadir el MD5 del original a spec/lib/overrides_spec.rb %>
+<% add_decidim_page_title(t(".title")) %>
+<div class="card">
+  <div class="item_show__header item_show__header--with-action-options">
+    <h1 class="item_show__header-title">
+      <div>
+        <%= t(".title") %>
+        <span id="js-selected-proposals-count" class="component-counter " title="<%= t("decidim.proposals.admin.proposals.index.selected") %>"></span>
+      </div>
+      <div class="flex items-center gap-x-4">
+        <%= render partial: "bulk-actions" %>
+        <%= link_to t(".statuses"), proposal_states_path, class: "button button__sm button__transparent-secondary" %>
+        <%# ===== CUSTOM: acceso a la gestión de agrupaciones de propuestas ===== %>
+        <%# Solo en el componente "Propuestas" (no en Conflictos ni en
+            otros componentes proposals del mismo espacio): mismo lookup
+            por nombre que usa ConflictoMapper.componente_propuestas. %>
+        <% if ConflictoMapper.componente_propuestas(current_component)&.id == current_component.id %>
+          <%= link_to t("decidim.proposals.admin.menu.agrupaciones"), grupos_path,
+                      class: "button button__sm button__transparent-secondary" %>
+        <% end %>
+        <%# ===== FIN CUSTOM ===== %>
+
+        <% if allowed_to? :create, :proposal %>
+          <%= link_to t("actions.new", scope: "decidim.proposals"), new_proposal_path, class: "button button__sm button__secondary" %>
+        <% end %>
+        <%= render partial: "decidim/admin/components/resource_action" %>
+      </div>
+    </h1>
+
+    <%= render partial: "decidim/proposals/admin/proposals/bulk_actions/taxonomy_change" %>
+    <%= render partial: "decidim/proposals/admin/proposals/bulk_actions/assign_to_evaluator" %>
+    <%= render partial: "decidim/proposals/admin/proposals/bulk_actions/unassign_from_evaluator" %>
+  </div>
+  <%= admin_filter_selector(filter_prefix_key) %>
+
+  <% if component_settings.collaborative_drafts_enabled? %>
+    <div class="flash warning"><%= t("deprecation_warning_collaborative_drafts_html", scope: "decidim.proposals.admin") %></div>
+  <% end %>
+
+  <div class="table-stacked mt-8">
+    <table class="table-list">
+      <%= render partial: "proposals-thead" %>
+      <tbody>
+        <%= render partial: "decidim/proposals/admin/proposals/proposal-tr",
+                   collection: proposals,
+                   as: :proposal,
+                   locals: { view: :index } %>
+      </tbody>
+    </table>
+  </div>
+  <% if allowed_to? :manage_trash, :proposal, participatory_space: current_participatory_space %>
+    <div class="card mt-4">
+      <%= link_to manage_trash_proposals_path, class: "flex items-center  text-secondary" do %>
+        <%= icon "delete-bin-2-line", class: "mr-2 fill-current text-secondary", role: "img" %>
+        <%= t("actions.view_deleted_proposals", scope: "decidim.proposals.admin") %>
+        <span class="ml-2">
+          <%= icon_with_tooltip("information-line", t("actions.deleted_proposals_info", scope: "decidim.proposals.admin")) %>
+        </span>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<%= decidim_paginate proposals %>
+
+<%= append_javascript_pack_tag "decidim_proposals_admin" %>

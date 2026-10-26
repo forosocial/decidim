@@ -1,0 +1,56 @@
+# config/locales/agrupaciones.es.yml
+# Mergear con el es.yml existente del proyecto (o renombrar a es.yml si
+# se prefiere un solo fichero por idioma).
+
+es:
+  errors:
+    messages:
+      nombre_too_long: "no puede superar los %{count} caracteres (tiene %{actual})"
+  activemodel:
+    attributes:
+      agrupacion:
+        nombre: "Nombre del grupo"
+        proposal_ids: "Propuestas"
+  decidim:
+    proposals:
+      admin:
+        menu:
+          agrupaciones: "Agrupaciones de propuestas"
+        agrupaciones:
+          index:
+            titulo: "Agrupaciones de propuestas"
+            nueva: "Nueva agrupación"
+            vacio: "Aún no hay agrupaciones. Crea la primera con el botón «Nueva agrupación»."
+            tabla:
+              nombre: "Nombre"
+              propuestas: "Propuestas"
+              acciones: "Acciones"
+            ver_publico: "Ver en el frontend"
+            editar: "Editar"
+            borrar: "Eliminar"
+            confirmar_borrado: "¿Seguro? Las propuestas quedarán desvinculadas del grupo (las propuestas no se borran)."
+          form:
+            titulo: "Datos de la agrupación"
+            ayuda_nombre: "Máximo %{max} caracteres."
+            filtro_pacto: "Filtrar por pacto"
+            todos_los_pactos: "Todos los pactos"
+            propuestas: "Propuestas del grupo"
+            buscar: "Buscar por título…"
+            ayuda_propuestas: "Selecciona una o varias propuestas. El filtro de pacto y la búsqueda solo ocultan opciones; las propuestas ya miembros siempre están visibles."
+          new:
+            titulo: "Nueva agrupación de propuestas"
+            crear: "Crear agrupación"
+          edit:
+            titulo: "Editar agrupación de propuestas"
+            guardar: "Guardar cambios"
+          create:
+            exito: "Agrupación «%{nombre}» creada."
+            error: "No se pudo crear la agrupación. Revisa el formulario."
+          update:
+            exito: "Agrupación «%{nombre}» actualizada."
+            error: "No se pudo actualizar la agrupación. Revisa el formulario."
+          destroy:
+            exito: "Agrupación «%{nombre}» eliminada."
+      proposals:
+        show:
+          ver_relacionadas: "Ver propuestas relacionadas: %{grupo}"

@@ -1,0 +1,55 @@
+# config/locales/agrupaciones.eu.yml
+# Euskara (siguiendo el glosario de Decidim: proposal -> iradokizuna)
+
+eu:
+  errors:
+    messages:
+      nombre_too_long: "ezin du %{count} karaktere baino gehiago izan (orain %{actual} ditu)"
+  activemodel:
+    attributes:
+      agrupacion:
+        nombre: "Taldearen izena"
+        proposal_ids: "Iradokizunak"
+  decidim:
+    proposals:
+      admin:
+        menu:
+          agrupaciones: "Iradokizunen multzoak"
+        agrupaciones:
+          index:
+            titulo: "Iradokizunen multzoak"
+            nueva: "Multzo berria"
+            vacio: "Oraindik ez dago multzorik. Sortu lehena «Multzo berria» botoiarekin."
+            tabla:
+              nombre: "Izena"
+              propuestas: "Iradokizunak"
+              acciones: "Ekintzak"
+            ver_publico: "Ikusi frontend-ean"
+            editar: "Editatu"
+            borrar: "Ezabatu"
+            confirmar_borrado: "Ziur zaude? Iradokizunak multzoarekin deslotuko dira (iradokizunak ez dira ezabatuko)."
+          form:
+            titulo: "Multzoaren datuak"
+            ayuda_nombre: "Gehienez %{max} karaktere."
+            filtro_pacto: "Iragazi akordioaren arabera"
+            todos_los_pactos: "Akordio guztiak"
+            propuestas: "Multzoko iradokizunak"
+            buscar: "Bilatu izenburuaren arabera…"
+            ayuda_propuestas: "Hautatu iradokizun bat edo gehiago. Akordioaren iragazkiak eta bilaketak aukerak baino ez ditu ezkutatzen; kide diren iradokizunak beti ikusgai daude."
+          new:
+            titulo: "Iradokizunen multzo berria"
+            crear: "Sortu multzoa"
+          edit:
+            titulo: "Editatu iradokizunen multzoa"
+            guardar: "Gorde aldaketak"
+          create:
+            exito: "«%{nombre}» multzoa sortu da."
+            error: "Ezin izan da multzoa sortu. Egiaztatu inprimakia."
+          update:
+            exito: "«%{nombre}» multzoa eguneratu da."
+            error: "Ezin izan da multzoa eguneratu. Egiaztatu inprimakia."
+          destroy:
+            exito: "«%{nombre}» multzoa ezabatu da."
+      proposals:
+        show:
+          ver_relacionadas: "Ikusi lotutako iradokizunak: %{grupo}"

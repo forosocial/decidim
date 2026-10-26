@@ -172,6 +172,10 @@ OVERRIDES = {
     # Propuesta en la que ya incluye la selección adecuada de Pacto y Conflicto.
     "app/views/decidim/proposals/proposals/show.html.erb" => "e2c0adf5c283f7396d93207e1b7ab740",
 
+    # Override: app/views/decidim/proposals/admin/proposals/index.html.erb
+    # Motivo: Inclusión de nuevo elemento del menú "agrupaciones de propuestas".
+    "app/views/decidim/proposals/admin/proposals/index.html.erb" => "be85d4fb783a9a66f48d13c26379e7b6"
+    
     # Override: app/views/decidim/proposals/proposals/_edit_form_fields.html.er
     # Motivo: Cambiar el formulario de creación de las proposas Propuestas para que
     # en lugar de mostrar "Conflicto N" muestre el título del Conflicto del Pacto
