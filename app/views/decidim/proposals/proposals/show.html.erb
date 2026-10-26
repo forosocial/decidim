@@ -176,27 +176,30 @@ extra_admin_link(
       </div>
       
       <%# -------------------------- %>
-      <%# Nuevo botón insertado aquí %>
+      <%# Botón: admin → form admin, usuario → form público, anónimo → nada %>
       <%# -------------------------- %>
-
-      <%# Oculta o muestra el botón en función del rol del usuario %>
-      <% if current_user&.admin? &&
-        (pre_ids = ConflictoMapper.preseleccion_para(@proposal)) &&
-        (comp_propuestas = ConflictoMapper.componente_propuestas(current_component)) %>
+      <% pre_ids = ConflictoMapper.preseleccion_para(@proposal) %>
+      <% comp_propuestas = ConflictoMapper.componente_propuestas(current_component) %>
+      <% puede_crear = current_user && allowed_to?(:create, :proposal,
+                                        current_component: comp_propuestas,
+                                        current_settings: comp_propuestas.current_settings,
+                                        current_participatory_space: comp_propuestas.participatory_space) %>
+      <% if puede_crear && pre_ids && comp_propuestas %>
         <div class="layout-main__section">
-          
-          <%= link_to t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides"),
-              Decidim::EngineRouter.admin_proxy(comp_propuestas).new_proposal_path(pre_taxonomies: pre_ids),
-              class: "button button__sm button__secondary",
-              target: "_blank", rel: "noopener" %>
-
+          <% if current_user.admin? %>
+            <%= link_to t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides"),
+                  Decidim::EngineRouter.admin_proxy(comp_propuestas).new_proposal_path(pre_taxonomies: pre_ids),
+                  class: "button button__sm button__secondary", target: "_blank", rel: "noopener" %>
+          <% else %>
+            <%= link_to t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides"),
+                  Decidim::EngineRouter.main_proxy(comp_propuestas).new_proposal_path,
+                  class: "button button__sm button__secondary", target: "_blank", rel: "noopener" %>
+          <% end %>
         </div>
       <% end %>
-      
       <%# -------------------------- %>
       <%# Fin de las modificación  %>
       <%# -------------------------- %>
-
     <% end %>
 
     <div class="flash flex-col warning">
