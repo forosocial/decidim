@@ -63,7 +63,8 @@
                 options_for_select(pacto_opts, pacto_selected),
                 { include_blank: t("decidim.taxonomies.prompt"),
                   label: decidim_sanitize_translated(pacto_filter.name) },
-                { name: "#{form.object_name}[taxonomies][]",
+                { required: true,
+                  name: "#{form.object_name}[taxonomies][]",
                   id: "taxonomies-#{pacto_filter.id}",
                   data: { mapeo: mapeo.to_json } } %>
         </div>
@@ -71,8 +72,8 @@
         <div class="row column">
           <%= form.select :taxonomies,
                 options_for_select([], conflicto_selected_ids),
-                { label: decidim_sanitize_translated(conflicto_filter.name) },
-                { multiple: true, size: 6,
+                { label: t("aborda_conflictos_html", scope: "decidim.conflicto_propuesta.overrides") },
+                { multiple: true, size: 6, required: true,
                   name: "#{form.object_name}[taxonomies][]",
                   id: "taxonomies-#{conflicto_filter.id}",
                   data: { preseleccionados: conflicto_selected_ids.to_json } } %>

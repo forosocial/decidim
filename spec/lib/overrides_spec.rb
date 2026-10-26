@@ -151,7 +151,7 @@ OVERRIDES = {
     "app/controllers/decidim/proposals/proposals_controller.rb" => "92bf9b32eb4968b6ad71c1711e4750d2",
 
     # Override: app/views/decidim/proposals/admin/proposals/_form.html.erb
-    # Motivo: Cambiar el formulario de ceación de las proposas Propuestas para que
+    # Motivo: Cambiar el formulario de creación de las proposas Propuestas para que
     # en lugar de mostrar "Conflicto N" muestre el título del Conflicto del Pacto
     # en cuestión.
     # Los otros elementos (mapper: app/services/conflicto_mapper.rb e initializer:
@@ -175,6 +175,12 @@ OVERRIDES = {
     # Override: app/views/decidim/proposals/admin/proposals/index.html.erb
     # Motivo: Inclusión de nuevo elemento del menú "agrupaciones de propuestas".
     "app/views/decidim/proposals/admin/proposals/index.html.erb" => "be85d4fb783a9a66f48d13c26379e7b6"
+    
+    # Override: app/views/decidim/proposals/proposals/_edit_form_fields.html.er
+    # Motivo: Cambiar el formulario de creación de las proposas Propuestas para que
+    # en lugar de mostrar "Conflicto N" muestre el título del Conflicto del Pacto
+    # en cuestión.
+    "app/views/decidim/proposals/proposals/_edit_form_fields.html.erb" => "752841272b5022307d06eeabee86780a"
   }
 }.freeze
 RSpec.describe "Decidim overrides" do
