@@ -35,7 +35,8 @@ ca:
             todos_los_pactos: "Tots els pactes"
             propuestas: "Propostes del grup"
             buscar: "Cercar per títol…"
-            ayuda_propuestas: "Selecciona una o més propostes. El filtre de pacte i la cerca només amaguen opcions; les propostes que ja són membres sempre són visibles."
+            ayuda_propuestas: "Selecciona una o més propostes. El filtre de pacte i la cerca només amaguen opcions; les propostes que ja són membres sempre són visibles. Si una proposta ja pertany a una altra agrupació, s'indica al costat del títol: seleccionar-la canviarà de grup."
+            ya_en_grupo: "ja pertany a «%{grupo}»"
           new:
             titulo: "Nova agrupació de propostes"
             crear: "Crear agrupació"
@@ -53,3 +54,4 @@ ca:
       proposals:
         show:
           ver_relacionadas: "Veure propostes relacionades: %{grupo}"
+          propuestas_relacionadas_html: "Propostes relacionades (%{grupo})"

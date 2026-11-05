@@ -35,7 +35,8 @@ gl:
             todos_los_pactos: "Todos os pactos"
             propuestas: "Propostas do grupo"
             buscar: "Buscar por título…"
-            ayuda_propuestas: "Selecciona unha ou varias propostas. O filtro de pacto e a busca só agochan opcións; as propostas que xa son membros están sempre visíbeis."
+            ayuda_propuestas: "Selecciona unha ou varias propostas. O filtro de pacto e a busca só agochan opcións; as propostas que xa son membros están sempre visíbeis. Se unha proposta xa pertence a outra agrupación, indícase ao carón do título: seleccionala trasladaa a este grupo."
+            ya_en_grupo: "xa pertence a «%{grupo}»"
           new:
             titulo: "Nova agrupación de propostas"
             crear: "Crear agrupación"
@@ -53,3 +54,4 @@ gl:
       proposals:
         show:
           ver_relacionadas: "Ver propostas relacionadas: %{grupo}"
+          propuestas_relacionadas_html: "Propostas relacionadas (%{grupo})"

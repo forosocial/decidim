@@ -30,13 +30,14 @@
         <%= form.label :proposal_ids, t(".propuestas") %>
         <input type="text" id="agrupacion_busqueda" class="input-group-field"
                placeholder="<%= t(".buscar") %>">
+        <% opciones = propuestas_opciones.map do |o| %>
+        <%   texto = o[:title].to_s %>
+        <%   texto += " (#{t(".ya_en_grupo", grupo: o[:otro_grupo])})" if o[:otro_grupo].present? %>
+        <%   [texto, o[:id],
+                { data: { pacto: o[:pacto_id].to_s, miembro: o[:miembro] ? "1" : "0" } }] %>
+        <% end %>
         <%= form.select :proposal_ids,
-              options_for_select(
-                propuestas_opciones.map do |o|
-                  [o[:title], o[:id],
-                   { data: { pacto: o[:pacto_id].to_s, miembro: o[:miembro] ? "1" : "0" } }]
-                end,
-                form.object.proposal_ids),
+              options_for_select(opciones, form.object.proposal_ids),
               {}, multiple: true, size: 15, id: "agrupacion_proposal_ids" %>
         <p class="help-text"><%= t(".ayuda_propuestas") %></p>
       </div>

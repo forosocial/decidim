@@ -66,13 +66,30 @@ de raíces por nombre ("pacto"/"conflicto") no se ve afectada por el
 tercer filtro "Grupos". Verificarlo con el test del checklist (paso 7).
 
 2. **Override público `app/views/decidim/proposals/proposals/show.html.erb`** —
-añadir donde convenga (por ejemplo junto al botón de conflicto):
+añadir donde convenga (por ejemplo junto al botón de conflicto). Mismo
+patrón visual que el bloque "Conflictos que aborda": título +
+`div.flash.flex-col.warning` con enlaces en `h2`:
 
 ```erb
-   <% ConflictoMapper.grupos_de(@proposal).each do |grupo_item| %>
-     <%= link_to t("decidim.proposals.proposals.show.ver_relacionadas", grupo: grupo_item.name["es"]),
-           Decidim::EngineRouter.main_proxy(current_component).proposals_path(
-             filter: { with_any_taxonomies: { ConflictoMapper.raiz_agrupaciones.id => [grupo_item.id] } }) %>
+   <% grupos_relacionados = ConflictoMapper.grupos_de(@proposal) %>
+   <% if grupos_relacionados.any? %>
+     <% grupo_item = grupos_relacionados.first %>
+     <div>
+       <%= t("propuestas_relacionadas_html", scope: "decidim.proposals.proposals.show",
+             grupo: grupo_item.name[I18n.locale.to_s].presence || grupo_item.name["es"]) %>
+     </div>
+
+     <div class="flash flex-col warning">
+       <% grupos_relacionados.each do |g| %>
+         <h2 class="h4 flex items-center gap 2 mb-4">
+           <%= link_to g.name[I18n.locale.to_s].presence || g.name["es"],
+                 Decidim::EngineRouter.main_proxy(current_component).proposals_path(
+                   filter: { with_any_taxonomies: { ConflictoMapper.raiz_agrupaciones.id => [g.id] } }),
+                 target: "_blank", rel: "noopener noreferrer" %>
+         </h2>
+       <% end %>
+     </div>
+   <% end %>
    <% end %>
 ```
 

@@ -58,11 +58,21 @@ module ConflictoMapperAgrupaciones
   end
 
   # Opciones para el multi-select del formulario admin:
-  # [{id:, title:, pacto_id:}] con pacto_id = ConflictoMapper.pacto_item_de
+  # [{id:, title:, pacto_id:, grupo_id:, grupo_nombre:}]
+  # pacto_id = ConflictoMapper.pacto_item_de; grupo_* = la agrupacion actual
+  # de la propuesta (nil si no tiene), para avisar al admin de que
+  # seleccionarla la cambiaria de grupo.
   def propuestas_para_agrupar(componente_propuestas)
     Decidim::Proposals::Proposal.where(component: componente_propuestas)
                                 .includes(:taxonomies).order(:id).map do |p|
-      { id: p.id, title: p.title["es"].to_s, pacto_id: pacto_item_de(p)&.id }
+      g = grupos_de(p).first
+      {
+        id: p.id,
+        title: p.title["es"].to_s,
+        pacto_id: pacto_item_de(p)&.id,
+        grupo_id: g&.id,
+        grupo_nombre: g ? (g.name[I18n.locale.to_s].presence || g.name["es"]).to_s : nil
+      }
     end
   end
 end

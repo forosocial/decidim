@@ -36,7 +36,8 @@ en:
             todos_los_pactos: "All pacts"
             propuestas: "Proposals in the group"
             buscar: "Search by title…"
-            ayuda_propuestas: "Select one or more proposals. The pact filter and the search only hide options; proposals already in the group are always visible."
+            ayuda_propuestas: "Select one or more proposals. The pact filter and the search only hide options; proposals already in the group are always visible. If a proposal already belongs to another group, this is shown after its title: selecting it moves it to this group."
+            ya_en_grupo: "already belongs to “%{grupo}”"
           new:
             titulo: "New proposal group"
             crear: "Create group"
@@ -54,3 +55,4 @@ en:
       proposals:
         show:
           ver_relacionadas: "View related proposals: %{grupo}"
+          propuestas_relacionadas_html: "Related proposals (%{grupo})"

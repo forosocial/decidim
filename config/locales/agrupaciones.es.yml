@@ -36,7 +36,8 @@ es:
             todos_los_pactos: "Todos los pactos"
             propuestas: "Propuestas del grupo"
             buscar: "Buscar por título…"
-            ayuda_propuestas: "Selecciona una o varias propuestas. El filtro de pacto y la búsqueda solo ocultan opciones; las propuestas ya miembros siempre están visibles."
+            ayuda_propuestas: "Selecciona una o varias propuestas. El filtro de pacto y la búsqueda solo ocultan opciones; las propuestas ya miembros siempre están visibles. Si una propuesta ya pertenece a otra agrupación, se indica tras su título: seleccionarla la cambia de grupo."
+            ya_en_grupo: "ya pertenece a «%{grupo}»"
           new:
             titulo: "Nueva agrupación de propuestas"
             crear: "Crear agrupación"
@@ -53,4 +54,5 @@ es:
             exito: "Agrupación «%{nombre}» eliminada."
       proposals:
         show:
-          ver_relacionadas: "Ver propuestas relacionadas: %{grupo}"
+          ver_relacionadas: "Propuestas relacionadas dentro de la agrupación '%{grupo}')"
+          propuestas_relacionadas_html: "Propuestas relacionadas (%{grupo})"
