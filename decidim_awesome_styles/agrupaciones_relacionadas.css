@@ -1,0 +1,55 @@
+/* ==========================================================================
+   Conflictos para app/views/decidim/proposals/proposals/show.html.erb
+   ========================================================================== */
+
+.agrupaciones-relacionadas {
+  margin: 2rem 0;
+
+  /* Color explicito (NO var(--alert): no garantizada como color en
+     Decidim 0.31). Sobrescribible desde decidim-awesome o por
+     organizacion redefiniendo la variable. Por defecto rojo. */
+  --agrupaciones-color: #e7131a;
+}
+
+/* Titulo de seccion: centrado, en rojo, con linea a todo el ancho debajo
+   (mismo lenguaje visual que el encabezado de Historial). */
+.agrupaciones-relacionadas__titulo {
+  color: var(--agrupaciones-color);
+  text-align: left;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.agrupaciones-relacionadas__titulo::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--agrupaciones-color);
+  margin-top: 0.5rem;
+}
+
+.agrupaciones-relacionadas__lista {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.agrupaciones-relacionadas__item {
+  margin: 0.5rem 0;
+}
+
+/* Enlaces: color de la seccion y subrayado (aspecto de enlace estandar). */
+.agrupaciones-relacionadas__enlace {
+  color: var(--agrupaciones-color);
+  text-decoration: none;
+}
+
+.agrupaciones-relacionadas__enlace:hover {
+  text-decoration: underline;
+}
+
+.agrupaciones-relacionadas__vertodas {
+  margin-top: 1rem;
+  font-size: 0.9em;
+}

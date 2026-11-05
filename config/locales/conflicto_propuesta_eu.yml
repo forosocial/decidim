@@ -3,6 +3,7 @@ eu:
   decidim:
     conflicto_propuesta:
       overrides:
+        vision: "Ikuspegi:"
         ver_todas_propuestas_html: "Ikusi <strong>Proposamen guztiak</strong> Gatazka hau lantzeko planteatutakoak"
         ver_todos_conflictos_html: "Ikusi <strong>Gatazka guztiak</strong> Itun honetan identifikatuak"
         crear_propuesta_conflicto: "Sortu proposamena gatazka hau lantzeko"

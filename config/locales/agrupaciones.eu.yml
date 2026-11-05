@@ -35,7 +35,8 @@ eu:
             todos_los_pactos: "Akordio guztiak"
             propuestas: "Multzoko iradokizunak"
             buscar: "Bilatu izenburuaren arabera…"
-            ayuda_propuestas: "Hautatu iradokizun bat edo gehiago. Akordioaren iragazkiak eta bilaketak aukerak baino ez ditu ezkutatzen; kide diren iradokizunak beti ikusgai daude."
+            ayuda_propuestas: "Hautatu iradokizun bat edo gehiago. Akordioaren iragazkiak eta bilaketak aukerak baino ez ditu ezkutatzen; kide diren iradokizunak beti ikusgai daude. Iradokizun bat beste multzo batekoa bada, tituluaren ondoan adierazten da: hautatuz gero, multzoz aldatuko da."
+            ya_en_grupo: "«%{grupo}» multzokoa da jada"
           new:
             titulo: "Iradokizunen multzo berria"
             crear: "Sortu multzoa"
@@ -53,3 +54,4 @@ eu:
       proposals:
         show:
           ver_relacionadas: "Ikusi lotutako iradokizunak: %{grupo}"
+          propuestas_relacionadas_html: "Lotutako iradokizunak (%{grupo})"

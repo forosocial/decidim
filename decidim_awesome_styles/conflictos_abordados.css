@@ -1,0 +1,63 @@
+/* ==========================================================================
+   Conflictos para app/views/decidim/proposals/proposals/show.html.erb
+   ========================================================================== */
+
+.conflictos-abordados {
+  --conflictos-color: #eab308;  /* amarillo aviso (borde) */
+  --conflictos-fondo: #fffbf2;  /* amarillo suave (fondo) */
+  --conflictos-enlace: #1a1a1a;
+}
+
+/* Caja: replica inicial de div.flash.flex-col.warning */
+
+.conflictos-abordados__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-left: 4px solid var(--conflictos-color);
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--conflictos-fondo);
+}
+
+/* Item: replica inicial de h2.h4.flex.items-center.mb-4 */
+.conflictos-abordados__item {
+  display: flex;
+  align-items: center;
+  margin: 0 0 1rem;
+  font-size: 1.25rem; /* text-xl (.h4) */
+  font-weight: 600;   /* font-semibold (.h4) */
+}
+
+.conflictos-abordados__item:last-child {
+  margin-bottom: 0;
+}
+
+/* Enlace: mismo aspecto que el resto de enlaces de Decidim */
+.conflictos-abordados__enlace {
+  color: #{"rgb(var(--secondary))"};
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.conflictos-abordados__enlace:hover {
+  text-decoration: none;
+}
+
+.conflictos-abordados__titulo { 
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: .5rem; 
+}
+
+/* Pie de caja (enlace "ver todos..."): igual que el texto base, un
+   pelin menor y separado del resto de items. */
+.conflictos-abordados__vertodos {
+  margin-top: 0.5rem;
+  font-size: 0.9em;
+}
+
+.conflictos-abordados--pacto {
+  /* sin reglas por defecto: hereda todo de .conflictos-abordados */
+}
+

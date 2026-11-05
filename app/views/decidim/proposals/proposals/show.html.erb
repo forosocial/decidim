@@ -53,16 +53,12 @@ extra_admin_link(
 
     <%= emendation_announcement_for @proposal %>
 
-    
-
     <% if @proposal.emendation? %>
       <h1 class="h2 decorator"><%= t("changes_at_title", scope: "decidim.proposals.proposals.show", title: present(@proposal.amendable).title(html_escape: true)) %></h1>
     <% else %>
       <h1 class="h2 decorator"><%= present(@proposal).title(html_escape: true) %></h1>
     <% end %>
     
-    
-
     <% unless component_settings.participatory_texts_enabled? %>
       <% unless ["section","subsection"].include?(@proposal.participatory_text_level) %>
         <div class="layout-author has_status">
@@ -108,17 +104,23 @@ extra_admin_link(
       <%= render partial: "decidim/shared/static_map", locals: { icon_name: "proposals", geolocalizable: @proposal } %>
     </div>
   <% end %>
+  
+  <%# La siguiente linea queda sin visualizarse %>  
+  <% cell "decidim/tags", @proposal %>
 
   <%# ------------------------------ %>
   <%# Nuevos enlaces insertados aquí %>
   <%# ------------------------------ %>
-  <br>
+
   <% componente_actual = @proposal.decidim_component_id %>
   <% id_componente_pactos = ConflictoMapper.id_componente_pactos %>
   <% id_componente_conflictos = ConflictoMapper.id_componente_conflictos %>
   <% id_componente_propuestas = ConflictoMapper.id_componente_propuestas %>
 
+
   <% if [id_componente_conflictos, id_componente_propuestas].include?(componente_actual) %>
+    <%# El componente actual es un conflicto o una propuesta %>
+
     <% comp_conflictos = Decidim::Component.find_by(id: id_componente_conflictos) %>
     <% comp_propuestas = Decidim::Component.find_by(id: id_componente_propuestas) %>
     <% pacto_item = ConflictoMapper.pacto_item_de(@proposal) %>
@@ -131,110 +133,145 @@ extra_admin_link(
           .where("decidim_taxonomies.id = ?", tax_pacto_id)
           .first %>
 
-    <%# ---- Página de PROPUESTA: lista de conflictos (multi) ---- %>
-    <% if componente_actual == id_componente_propuestas && comp_conflictos %>
-        
-      <% ConflictoMapper.grupos_de(@proposal).each do |grupo_item| %>
-      <%# Caso de existir propuestas relacionadas con esta propuesta %>
-        <%= link_to t("decidim.proposals.proposals.show.ver_relacionadas", grupo: grupo_item.name["es"]),
-            Decidim::EngineRouter.main_proxy(current_component).proposals_path(
-              filter: { with_any_taxonomies: { ConflictoMapper.raiz_agrupaciones.id => [grupo_item.id] } }) %>
+    <%# ---- Página de PROPUESTAS ---- %>
+    <%# Caso de existir propuestas relacionadas con esta propuesta %>
+    <% grupos_relacionados = ConflictoMapper.grupos_de(@proposal) %>
+    <% if grupos_relacionados.any? %>
+      <% grupos_relacionados.each do |grupo_item| %>
+        <% miembros = ConflictoMapper.propuestas_de_grupo(grupo_item, comp_propuestas).reject { |p| p.id == @proposal.id } %>
+        <section class="agrupaciones-relacionadas">
+          <h2 class="agrupaciones-relacionadas__titulo">
+            
+              <%= link_to t("propuestas_relacionadas_html", scope: "decidim.proposals.proposals.show",
+                            grupo: translated_attribute(grupo_item.name)),
+                          Decidim::EngineRouter.main_proxy(current_component).proposals_path(
+                            filter: { with_any_taxonomies: { ConflictoMapper.raiz_agrupaciones.id => [grupo_item.id] } }),
+                          class: "agrupaciones-relacionadas__enlace" %>
+
+          </h2>
+          <ul class="agrupaciones-relacionadas__lista">
+            <% miembros.each do |rel_prop| %>
+              <li class="agrupaciones-relacionadas__item">
+                <%= link_to translated_attribute(rel_prop.title),
+                            Decidim::EngineRouter.main_proxy(comp_propuestas).proposal_path(rel_prop),
+                            class: "agrupaciones-relacionadas__enlace" %>
+              </li>
+            <% end %>
+          </ul>
+          
+        </section>
       <% end %>
-    
-      <% aborda_conflictos = ConflictoMapper.conflictos_de_propuesta(@proposal, comp_conflictos) %>
-      <% if aborda_conflictos.any? %>
-      
-        <div>
+    <% end %>
+
+
+
+    <% aborda_conflictos = ConflictoMapper.conflictos_de_propuesta(@proposal, comp_conflictos) %>
+    <% if aborda_conflictos.any? %>
+      <section class="conflictos-abordados">
+        <div class="conflictos-abordados__titulo">
           <%= aborda_conflictos.one? ? t("aborda_conflicto_html", scope: "decidim.conflicto_propuesta.overrides") : t("aborda_conflictos_html", scope: "decidim.conflicto_propuesta.overrides") %>
         </div>
 
-        <div class="flash flex-col warning">
+        <div class="conflictos-abordados__lista">
           <% aborda_conflictos.each do |conf| %>
-            <h2 class="h4 flex items-center gap 2 mb-4">
+            <h2 class="conflictos-abordados__item">
               <% if conf[:proposal] %>
-                <%= link_to conf[:texto], resource_locator(conf[:proposal]).path, target: "_blank", rel: "noopener noreferrer" %>
+                <%= link_to conf[:texto], resource_locator(conf[:proposal]).path, target: "_blank", rel: "noopener noreferrer", class: "conflictos-abordados__enlace" %>
               <% else %>
                 <%= conf[:texto] %>
               <% end %>
             </h2>
           <% end %>
         </div>
-      <% end %>
+      </section>
     <% end %>
 
-    
-      <%# ---- Página de CONFLICTO: enlace a sus propuestas ---- %>
-      <% item_conf = ConflictoMapper.conflicto_item_de(@proposal) %>
-      <% es_conflicto = item_conf.present? && item_conf.parent_id == ConflictoMapper.raiz(item_conf).id %>
-      <% if componente_actual == id_componente_conflictos && es_conflicto && comp_propuestas %>
-        <% n = ConflictoMapper.propuestas_para_conflicto(@proposal, comp_propuestas) %>
-        <div class="flash flex-col warning">
-          <% if n.positive? %>
-            <% conflicto_root_id = ConflictoMapper.raiz(item_conf).id %>
-            <% query = { filter: { with_any_state: ["state_not_published"],
-                                  with_any_taxonomies: { pacto_root_id => [tax_pacto_id],
-                                                          conflicto_root_id => item_conf.children.ids } } }.to_query %>
-            <%= link_to t("ver_todas_propuestas_html", scope: "decidim.conflicto_propuesta.overrides") ,
-                  "#{main_component_path(comp_propuestas)}?#{query}", target: "_blank", rel: "noopener noreferrer" %>
-                  
-          <% else %>
-            <%= t("sin_propuestas_html", scope: "decidim.conflicto_propuesta.overrides") %>
-          <% end %>
-        </div>
-        
-        <%# ----------------------------------------------------------------- %>
-        <%# Botón: admin → form admin, usuario → form público, anónimo → nada %>
-        <%# ----------------------------------------------------------------- %>
-
-        <% pre_ids = ConflictoMapper.preseleccion_para(@proposal) %>
-        <% comp_propuestas = ConflictoMapper.componente_propuestas(current_component) %>
-        <% if pre_ids && comp_propuestas %>
-          <% if current_user&.admin? %>
-            <%# Admin: siempre visible (la creación admin no depende del toggle de fase) %>
-            <div class="layout-main__section" >
-              <%= link_to t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides"),
-                    Decidim::EngineRouter.admin_proxy(comp_propuestas).new_proposal_path(pre_taxonomies: pre_ids),
-                    class: "button button__sm button__secondary", target: "_blank", rel: "noopener" %>
-            </div>
-          <% elsif comp_propuestas.current_settings.creation_enabled &&
-                comp_propuestas.participatory_space.can_participate?(current_user) %>
-            <%# Resto: mismo patrón que el botón nativo "Nueva propuesta" %>
-            <div class="layout-main__section" >
-              <%= action_authorized_link_to :create,
-                    Decidim::EngineRouter.main_proxy(comp_propuestas).new_proposal_path,
-                    permissions_holder: comp_propuestas,
-                    class: "button button__sm button__secondary",
-                    data: { "redirect_url" => Decidim::EngineRouter.main_proxy(comp_propuestas).new_proposal_path },
-                    target: "_blank", rel: "noopener" do %>
-                <%= t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides") %>
-              <% end %>
-            </div>
-          <% end %>
-        <% end %>
-        <%# -------------------------- %>
-        <%# Fin de las modificación  %>
-        <%# -------------------------- %>
-      <% end %>
-
+    <%# ---- Página de CONFLICTO: enlace a sus propuestas ---- %>
+    <% item_conf = ConflictoMapper.conflicto_item_de(@proposal) %>
+    <% es_conflicto = item_conf.present? && item_conf.parent_id == ConflictoMapper.raiz(item_conf).id %>
+    <% if componente_actual == id_componente_conflictos && es_conflicto && comp_propuestas %>
+      <% n = ConflictoMapper.propuestas_para_conflicto(@proposal, comp_propuestas) %>
       <div class="flash flex-col warning">
-        <%# ---- En ambas: ver todos los conflictos del pacto ---- %>
-
-        <% if pacto %>
-          <h2 class="h4 flex items-center gap 2 mb-4">
-            <%= link_to present(pacto).title, resource_locator(pacto).path, target: "_blank", rel: "noopener noreferrer" %>
-          </h2>
-        <% end %>
-
-        <% if comp_conflictos && tax_pacto_id %>
-          <% query = { filter: { with_any_taxonomies: { pacto_root_id => [tax_pacto_id] } } }.to_query %>
-          <%= link_to t("ver_todos_conflictos_html", scope: "decidim.conflicto_propuesta.overrides"),
-                "#{main_component_path(comp_conflictos)}?#{query}", target: "_blank", rel: "noopener noreferrer" %>
+        <% if n.positive? %>
+          <% conflicto_root_id = ConflictoMapper.raiz(item_conf).id %>
+          <% query = { filter: { with_any_state: ["state_not_published"],
+                                with_any_taxonomies: { pacto_root_id => [tax_pacto_id],
+                                                        conflicto_root_id => item_conf.children.ids } } }.to_query %>
+          <%= link_to t("ver_todas_propuestas_html", scope: "decidim.conflicto_propuesta.overrides") ,
+                "#{main_component_path(comp_propuestas)}?#{query}", target: "_blank", rel: "noopener noreferrer" %>
+                
+        <% else %>
+          <%= t("sin_propuestas_html", scope: "decidim.conflicto_propuesta.overrides") %>
         <% end %>
       </div>
-  <% end %>
+      
+      <%# ----------------------------------------------------------------- %>
+      <%# Botón: admin → form admin, usuario → form público, anónimo → nada %>
+      <%# ----------------------------------------------------------------- %>
 
+      <% pre_ids = ConflictoMapper.preseleccion_para(@proposal) %>
+      <% comp_propuestas = ConflictoMapper.componente_propuestas(current_component) %>
+      <% if pre_ids && comp_propuestas %>
+        <% if current_user&.admin? %>
+          <%# Admin: siempre visible (la creación admin no depende del toggle de fase) %>
+          <div class="layout-main__section" >
+            <%= link_to t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides"),
+                  Decidim::EngineRouter.admin_proxy(comp_propuestas).new_proposal_path(pre_taxonomies: pre_ids),
+                  class: "button button__sm button__secondary", target: "_blank", rel: "noopener" %>
+          </div>
+        <% elsif comp_propuestas.current_settings.creation_enabled &&
+              comp_propuestas.participatory_space.can_participate?(current_user) %>
+          <%# Resto: mismo patrón que el botón nativo "Nueva propuesta" %>
+          <div class="layout-main__section" >
+            <%= action_authorized_link_to :create,
+                  Decidim::EngineRouter.main_proxy(comp_propuestas).new_proposal_path,
+                  permissions_holder: comp_propuestas,
+                  class: "button button__sm button__secondary",
+                  data: { "redirect_url" => Decidim::EngineRouter.main_proxy(comp_propuestas).new_proposal_path },
+                  target: "_blank", rel: "noopener" do %>
+              <%= t("crear_propuesta_conflicto", scope: "decidim.conflicto_propuesta.overrides") %>
+            <% end %>
+            <br><br>
+          </div>
+        <% end %>
+      <% end %>
+      <%# -------------------------- %>
+      <%# Fin de las modificación  %>
+      <%# -------------------------- %>
+    <% end %>
+
+
+      <%# ---- En ambas: ver todos los conflictos del pacto ---- %>
+      <% if pacto || (comp_conflictos && tax_pacto_id) %>
+        <section class="conflictos-abordados conflictos-abordados--pacto">
+          <% if pacto %>
+            
+            <div class="conflictos-abordados__titulo">
+              <%= t("vision", scope: "decidim.conflicto_propuesta.overrides") %>
+            </div>
+
+            <div class="conflictos-abordados__lista">
+              <h2 class="conflictos-abordados__item">
+                <%= link_to present(pacto).title, resource_locator(pacto).path, target: "_blank", rel: "noopener noreferrer", class: "conflictos-abordados__enlace" %>
+              </h2>
+
+              <% if comp_conflictos && tax_pacto_id %>
+                <% query = { filter: { with_any_taxonomies: { pacto_root_id => [tax_pacto_id] } } }.to_query %>
+                <p class="conflictos-abordados__vertodos">
+                  <%= link_to t("ver_todos_conflictos_html", scope: "decidim.conflicto_propuesta.overrides"),
+                        "#{main_component_path(comp_conflictos)}?#{query}", target: "_blank", rel: "noopener noreferrer",
+                        class: "conflictos-abordados__enlace" %>
+                </p>
+              <% end %>
+            </div>
+
+          <% end %>
+          </div>
+        </section>
+      <% end %>
+  <% end %>
   <%# -------------------------- %>
-  <%# Fin de las modificación  %>
+  <%# Fin de las modificación    %>
   <%# -------------------------- %>
 
   <%# ----------------------------------------- %>
@@ -260,16 +297,16 @@ extra_admin_link(
     <%= cell "decidim/amendable/amendments", @proposal %>
   </section>
 
-  <%= cell "decidim/tags", @proposal %>
+  
 
   <%= render partial: "actions" %>
 
   <% content_for :item_footer do %>
     <%= comments_for @proposal %>
 
-     <ul class="metadata__container layout-main__section" data-metadata-footer>
-       <%= content_tag :li, resource_reference(@proposal), class: "metadata__item" %>
-       <%= content_tag :li, resource_version(proposal_presenter, versions_path: proposal_version_path(@proposal, proposal_presenter.versions.count)), class: "metadata__item" %>
+    <ul class="metadata__container layout-main__section" data-metadata-footer>
+      <%= content_tag :li, resource_reference(@proposal), class: "metadata__item" %>
+      <%= content_tag :li, resource_version(proposal_presenter, versions_path: proposal_version_path(@proposal, proposal_presenter.versions.count)), class: "metadata__item" %>
 
       <% fingerprint_id = dom_id(@proposal, :fingerprint_dialog) %>
       <%= content_tag :li, class: "metadata__item" do %>
