@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 ruby RUBY_VERSION
 
-gem "decidim", "0.31.4"
+gem "decidim", "0.31.8"
 gem "decidim-decidim_awesome"
 gem "decidim-extra_user_fields", github: "openpoke/decidim-module-extra_user_fields"
 gem "decidim-term_customizer", github: "openpoke/decidim-module-term_customizer"
@@ -35,7 +35,7 @@ gem "exception_notification"
 group :development, :test do
   gem "brakeman", "~> 7.0"
   gem "byebug", "~> 11.0", platform: :mri
-  gem "decidim-dev", "0.31.4"
+  gem "decidim-dev", "0.31.8"
   gem "net-imap", "~> 0.5.0"
   gem "net-pop", "~> 0.1.1"
   gem "rspec-rails"

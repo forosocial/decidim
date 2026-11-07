@@ -33,7 +33,7 @@ require "digest"
 #########
 #     USO
 #########
-# Tras realizar una actualización de Decidim ejecutar:
+# Tras realizar una actualizadesdede Decidim ejecutar:
 #      bundle exec rspec spec/lib/overrides_spec.rb
 #
 
@@ -81,30 +81,6 @@ OVERRIDES = {
     # RAILS_ENV=production bundle exec rails runner "Rails.cache.clear"
     "app/cells/decidim/activity_cell.rb" => "e2345598669f6312f17ee964950a83bc",
 
-    # Override de traducción: config/locales/gl.yml
-    # corrige un error en las cadenas oficiales de
-    # Decidim para decidim.amendments.emendation.announcement (gl).
-    #
-    # Motivo: las cuatro cadenas (accepted, evaluating, rejected, withdrawn)
-    # usan las interpolaciones %{amendable_link} y %{announcement_date}, pero
-    # el código (Decidim::Amendable::AnnouncementCell) construye el hash de
-    # interpolación con las claves %{proposal_link} y %{date}. Al no coincidir
-    # los nombres, I18n lanza "missing interpolation argument" y rompe la
-    # vista de la propuesta para cualquier usuaria con idioma gallego activo
-    # al ver una enmienda (evaluando, aceptada, rechazada o retirada).
-    "config/locales/gl.yml" => "dfce4a7294eb152b1e620c73e23d57fd",
-
-    # Override de traducción: config/locales/eu.yml
-    # corrige un error en la cadena "rejected" de
-    # decidim.amendments.emendation.announcement (eu).
-    #
-    # Motivo: igual que el override de gl.yml (ver ese fichero para más
-    # detalle) pero acotado solo a "rejected", que es la única de las cuatro
-    # cadenas mal escrita en euskera. Usa %{amendable_link}/%{announcement_date}
-    # en vez de %{proposal_link}/%{date}, provocando "missing interpolation
-    # argument" al ver una enmienda rechazada con idioma euskera activo.
-    "config/locales/eu.yml" => "447b0c63fb8e9ccb756aeba7e8ccc282",
-
     # Override: app/cells/decidim/author/date.erb
     # Motivo: Cuando una propuesta proviene de un encuentro en la celda author
     # aparece la fecha en la que el admin incluyó la propuesta, sin embargo pareció
@@ -145,10 +121,9 @@ OVERRIDES = {
     # original de Decidim vía `super`). Si Decidim cambia la lógica o
     # firma de default_states, revisar el prepend.
     #
-    # Tambien:
-    # Override: app/services/conflicto_mapper.rb
-    # Revisar ambos en caso de cambio.
-    "app/controllers/decidim/proposals/proposals_controller.rb" => "92bf9b32eb4968b6ad71c1711e4750d2",
+    # 07/11/2026 - En la actualización de Decidim desde 0.31.4 a 0.31.8 siugue vigente el cambio
+    # y se actualiza MD5
+    "app/controllers/decidim/proposals/proposals_controller.rb" => "c37b628d7426f957d1340a4b40ab6787",
 
     # Override: app/views/decidim/proposals/admin/proposals/_form.html.erb
     # Motivo: Cambiar el formulario de creación de las proposas Propuestas para que
@@ -156,15 +131,14 @@ OVERRIDES = {
     # en cuestión.
     # Los otros elementos (mapper: app/services/conflicto_mapper.rb e initializer:
     # config/initializers/validar_pareja_pacto_conflicto.rb , son ficheros nuevos
-    # que no tienen contrapartida upstream, así que no tienen entrada que vigilar.
+    # que no tienen contrapartida upstream: no tienen entrada que vigilar.
     # Sin embargo, el initializer hace prepend sobre Decidim::Proposals::Admin::ProposalForm
     # y asume que existe el atributo taxonomies y el contexto current_component.
     # Si en una actualización Decidim renombra esa clase o cambia el manejo de
     # taxonomías en el formulario, la validación podría romperse silenciosamente.
     # En el caso de que cambie, no significa que el initializer deje de funcionar,
-    # pero es la señal de revisar que taxonomies y current_component siguen existiendo.
-    "app/views/decidim/proposals/admin/proposals/_form.html.erb" => "3c6d2675fa774c888150dc8da494fee0",
-    "app/forms/decidim/proposals/admin/proposal_form.rb" => "c222792947e0bac2cd4869adb5ce13bb",
+    # pero es la señal de .
+    "app/views/decidim/proposals/admin/proposals/_form.html.erb" => "4752eb6a8b403912c9f686999c1860c5",
 
     # Override: app/views/decidim/proposals/proposals/show.html.erb
     # Motivo: Creación de un botón "Crear propuesta para este conflicto" visible
@@ -174,13 +148,13 @@ OVERRIDES = {
 
     # Override: app/views/decidim/proposals/admin/proposals/index.html.erb
     # Motivo: Inclusión de nuevo elemento del menú "agrupaciones de propuestas".
-    "app/views/decidim/proposals/admin/proposals/index.html.erb" => "be85d4fb783a9a66f48d13c26379e7b6"
-    
+    "app/views/decidim/proposals/admin/proposals/index.html.erb" => "be85d4fb783a9a66f48d13c26379e7b6",
+
     # Override: app/views/decidim/proposals/proposals/_edit_form_fields.html.er
     # Motivo: Cambiar el formulario de creación de las proposas Propuestas para que
     # en lugar de mostrar "Conflicto N" muestre el título del Conflicto del Pacto
     # en cuestión.
-    "app/views/decidim/proposals/proposals/_edit_form_fields.html.erb" => "752841272b5022307d06eeabee86780a"
+    "app/views/decidim/proposals/proposals/_edit_form_fields.html.erb" => "93a1717d59b8a6c74c27654790d42ae0"
   }
 }.freeze
 RSpec.describe "Decidim overrides" do

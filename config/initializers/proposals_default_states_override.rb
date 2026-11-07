@@ -4,7 +4,7 @@
 #
 # Por defecto, Decidim marca como "activos" en el filtro todos los estados
 # configurados en el componente (incluido "evaluating") excepto "rejected".
-# El código original (decidim-proposals 0.31.4):
+# El código original (decidim-proposals 0.31.8):
 #
 #   def default_states
 #     [
@@ -31,6 +31,7 @@
 
 # 12/09/2026 - Tras la activación de las Propuesta se ha generalizado a todos los componentes
 # y se ha incluido en el filtro quitar "accepted"
+# 07/11/2026 - En la actualización de Decidim desde 0.31.4 a 0.31.8 siugue vigente el cambio
 
 module ForoSocial
   module Overrides
