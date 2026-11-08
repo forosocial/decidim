@@ -5,6 +5,9 @@
 # convierte la consulta en FROM (SELECT ... INTERSECT SELECT ...) AS
 # decidim_proposals_proposals, lo que rompe los ORDER BY posteriores.
 # Este parche lo reescribe como un subquery de ids (WHERE id IN (...)).
+# ISSUE REPORTADO:
+# Se ha reportado en https://github.com/decidim/decidim/issues/18064
+#
 module WithAnyTaxonomiesAsSubquery
   def with_any_taxonomies(*args)
     result = super

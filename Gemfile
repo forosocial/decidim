@@ -5,6 +5,11 @@ source "https://rubygems.org"
 ruby RUBY_VERSION
 
 gem "decidim", "0.31.8"
+# kaminari 1.3.x rompe la paginación dentro de cells en Decidim
+# (Missing partial ../views/kaminari/decidim/_paginator)
+# Ver issue https://github.com/decidim/decidim/issues/18065
+gem "kaminari", "< 1.3"
+
 gem "decidim-decidim_awesome"
 gem "decidim-extra_user_fields", github: "openpoke/decidim-module-extra_user_fields"
 gem "decidim-term_customizer", github: "openpoke/decidim-module-term_customizer"
@@ -29,7 +34,6 @@ gem "puma", ">= 6.3.1"
 gem "redis"
 gem "sidekiq"
 
-
 gem "exception_notification"
 
 group :development, :test do
@@ -51,6 +55,6 @@ group :development do
   gem "capistrano-rails"
   gem "capistrano-rbenv"
 
-  gem "erb_lint" 
+  gem "erb_lint"
   gem "solargraph"
 end
