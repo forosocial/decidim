@@ -1,0 +1,85 @@
+ca:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "Estructura del %{process}"
+        sin_conflictos: "Sense conflictes"
+        sin_propuestas: "Sense propostes encara"
+        boton_nueva_propuesta: "Crear proposta per a aquest conflicte"
+        desplegar: "Mostrar o amagar el contingut"
+        desplegar_todo: "Desplegar-ho tot"
+        estados:
+          consensuada: "En vigor"
+          accepted: "Acceptada"
+          rejected: "Rebutjada"
+          evaluating: "En avaluació"
+          not_answered: "Sense resposta"
+          withdrawn: "Retirada"
+en:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "%{process} structure"
+        sin_conflictos: "No conflicts"
+        sin_propuestas: "No proposals yet"
+        boton_nueva_propuesta: "Create a proposal for this conflict"
+        desplegar: "Show or hide the content"
+        desplegar_todo: "Expand all"
+        estados:
+          consensuada: "In force"
+          accepted: "Accepted"
+          rejected: "Rejected"
+          evaluating: "Under evaluation"
+          not_answered: "In force"
+          withdrawn: "Withdrawn"
+es:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "Estructura del %{process} - (Pacto ➔ Conflictos ➔ Propuestas)"
+        sin_conflictos: "Sin conflictos"
+        sin_propuestas: "Sin propuestas todavía"
+        boton_nueva_propuesta: "Crear propuesta para este conflicto"
+        desplegar: "Mostrar u ocultar el contenido"
+        desplegar_todo:  "Desplegar todo"
+        estados:
+          consensuada: "En vigor"
+          accepted: "Aceptada"
+          rejected: "Rechazada"
+          evaluating: "En evaluación"
+          not_answered: "En vigor"
+          withdrawn: "Retirada"
+eu:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "%{process} egitura"
+        sin_conflictos: "Ez dago gatazkarik"
+        sin_propuestas: "Oraindik ez dago proposamenik"
+        boton_nueva_propuesta: "Sortu proposamen bat gatazka honetarako"
+        desplegar: "Erakutsi edo ezkutatu edukia"
+        desplegar_todo: "Zabaldu dena"
+        estados:
+          consensuada: "Indarrean"
+          accepted: "Onartua"
+          rejected: "Baztertua"
+          evaluating: "Ebaluazioan"
+          not_answered: "Indarrean"
+          withdrawn: "Erretiratua"
+gl:
+  decidim:
+    participatory_processes:
+      arbol:
+        title: "Estrutura do %{process}"
+        sin_conflictos: "Sen conflitos"
+        sin_propuestas: "Sen propostas aínda"
+        boton_nueva_propuesta: "Crear proposta para este conflito"
+        desplegar: "Mostrar ou agochar o contido"
+        desplegar_todo:  "Despregar todo"
+        estados:
+          consensuada: "En vigor"
+          accepted: "Aceptada"
+          rejected: "Rexeitada"
+          evaluating: "En avaliación"
+          not_answered: "En vigor"
+          withdrawn: "Retirada"

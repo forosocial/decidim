@@ -1,0 +1,137 @@
+<%# app/views/decidim/participatory_processes/arbol/show.html.erb %>
+
+<% add_decidim_meta_tags(title: t("decidim.participatory_processes.arbol.title", process: translated_attribute(current_participatory_space.title))) %>
+
+<div class="layout-item">
+  <h1 class="h3 decorator" style="grid-column: 1 / -1;">
+    <%= t("decidim.participatory_processes.arbol.title", process: translated_attribute(current_participatory_space.title)) %>
+  </h1>
+
+  <%# alternador global: despliega/encoge todos los bodies a la vez %>
+  <% gid = "arbol-global-#{current_participatory_space.id}" %>
+  <div class="arbol-global-row">
+    <%= tag.input(type: "checkbox", id: gid, class: "arbol-global-state") %>
+    <%= tag.label(for: gid, class: "arbol-global") do %>
+      <span class="arbol-global-icon">▸</span>
+      <%= t("decidim.participatory_processes.arbol.desplegar_todo", default: "Desplegar todo") %>
+    <% end %>
+  </div>
+
+
+  <%# modo "solo consensuada" por nivel: cuando el ESTADOS_* de ese nivel es
+      exactamente [:sin_respuesta], ese nivel no pinta botones y el titulo
+      lleva el enlace a la proposal consensuada %>
+  <% solo_pactos = solo_consensuadas?(ArbolConfig::ESTADOS_PACTOS) %>
+  <% solo_conflictos = solo_consensuadas?(ArbolConfig::ESTADOS_CONFLICTOS) %>
+  <% solo_propuestas = solo_consensuadas?(ArbolConfig::ESTADOS_PROPUESTAS) %>
+
+  <%# agrupacion por padre ("Pactos transversales" primero, "Pactos
+      tematicos" despues): id de padre DESCENDENTE; pactos por id
+      ascendente dentro de cada rama. Ramas padre: etiqueta sin enlace. %>
+  <% ramas_por_padre = arbol.group_by { |pacto_item, _| pacto_item.parent }
+                            .sort_by { |padre, _| -(padre&.id || 0) } %>
+
+  <ul class="arbol-tree">
+    <% ramas_por_padre.each do |padre, ramas| %>
+      <li>
+        <div class="arbol-node arbol-node--grupo">
+          <span class="arbol-marker"></span>
+          <span><%= padre&.name&.[]("es") || "—" %></span>
+        </div>
+        <ul>
+          <% ramas.sort_by { |pacto_item, _| pacto_item.id }.each do |pacto_item, rama| %>
+            <li>
+              <div class="arbol-node arbol-node--pacto">
+                <span class="arbol-marker"></span>
+                <% pp_filtradas = rama[:pacto_propuestas_filtradas].to_a %>
+                <% if solo_pactos %>
+                  <%# sin botones "consensuada": el titulo del pacto lleva el enlace %>
+                  <% if pp_filtradas.any? %>
+                    <%= link_to router_pactos.proposal_path(pp_filtradas.first), target: "_blank", rel: "noopener" do %>
+                      <%= pacto_item.name["es"] %>
+                    <% end %>
+                  <% else %>
+                    <%= pacto_item.name["es"] %>
+                  <% end %>
+                <% else %>
+                  <span><%= pacto_item.name["es"] %></span>
+                  <% ordenar_por_estado(pp_filtradas).each do |pp| %>
+                    <%= link_to router_pactos.proposal_path(pp), target: "_blank", rel: "noopener" do %>
+                      <%= etiqueta_estado(pp) %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+                <%= desplegable_body(pp_filtradas.find { |p| p.state.nil? } || pp_filtradas.first, sufijo: "p-#{pacto_item.id}") %>
+              </div>
+              <ul>
+                <% if rama[:conflictos].empty? %>
+                  <li><span class="arbol-vacio"><%= t("decidim.participatory_processes.arbol.sin_conflictos") %></span></li>
+                <% end %>
+                <%# un nodo por item "Conflicto N": los records (propuesta original,
+                    enmiendas, duplicados) se agrupan en una sola linea, con un
+                    boton de estado por cada uno, enlazando a su proposal. Las
+                    hojas se unen y deduplican por id entre los records. %>
+                <% rama[:conflictos].group_by { |n| n[:conflicto_item].id }.each do |_, nodos| %>
+                  <% principal = nodos.first %>
+                  <% records = nodos.map { |nd| nd[:conflicto] } %>
+                  <% hojas = nodos.flat_map { |nd| nd[:propuestas].to_a }.uniq(&:id) %>
+                  
+                  <li>
+                    <div class="arbol-node arbol-node--conflicto">
+                      <span class="arbol-marker"></span>
+                      <% if solo_conflictos %>
+                        <%# sin botones: el titulo del conflicto lleva el enlace %>
+                        <%= link_to principal[:conflicto].title["es"],
+                                    router_conflictos.proposal_path(principal[:conflicto]),
+                                    target: "_blank", rel: "noopener" %>
+                      <% else %>
+                        <span><%= principal[:conflicto].title["es"] %></span>
+                        <% ordenar_por_estado(records).each do |rec| %>
+                          <%= link_to router_conflictos.proposal_path(rec), target: "_blank", rel: "noopener" do %>
+                            <%= etiqueta_estado(rec) %>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+                      <span class="arbol-contador"><%= hojas.size %> propuestas</span>
+                      <%# boton_nueva_propuesta_conflicto(principal[:conflicto]) %>
+                      <%= desplegable_body(records.find { |r| r.state.nil? } || records.first, sufijo: "c-#{principal[:conflicto].id}") %>
+                    </div>
+
+                    <ul>
+                      <% if hojas.empty? %>
+                        <li><span class="arbol-vacio"><%= t("decidim.participatory_processes.arbol.sin_propuestas") %></span></li>
+                      <% end %>
+                      <%# hojas: una linea por titulo; si hay varios records con el
+                          mismo titulo (enmiendas/duplicados), un boton por record %>
+                      <% ordenar_por_estado(hojas).group_by { |pr| pr.title["es"] }.each do |_, prs| %>
+                        <li>
+                          <div class="arbol-node arbol-node--propuesta">
+                            <span class="arbol-marker"></span>
+                            <% if solo_propuestas %>
+                              <%# sin botones: el titulo de la propuesta lleva el enlace %>
+                              <%= link_to prs.first.title["es"],
+                                          router_propuestas.proposal_path(prs.first),
+                                          target: "_blank", rel: "noopener" %>
+                            <% else %>
+                              <span><%= prs.first.title["es"] %></span>
+                              <% prs.each do |pr| %>
+                                <%= link_to router_propuestas.proposal_path(pr), target: "_blank", rel: "noopener" do %>
+                                  <%= etiqueta_estado(pr) %>
+                                <% end %>
+                              <% end %>
+                            <% end %>
+                            <%= desplegable_body(prs.find { |r| r.state.nil? } || prs.first, sufijo: "h-#{principal[:conflicto].id}-#{prs.first.id}") %>
+                          </div>
+                        </li>
+                      <% end %>
+                    </ul>
+                  </li>
+                <% end %>
+              </ul>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
+  </ul>
+</div>
