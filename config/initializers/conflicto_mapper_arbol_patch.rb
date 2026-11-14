@@ -30,9 +30,11 @@ module ConflictoMapperArbol
     comp_propuestas = componente_del_espacio(espacio, "Propuestas")
 
     conflictos = filtrar_estados(
-      Decidim::Proposals::Proposal.where(component: comp_conflictos)
-                                  .where.not(published_at: nil)
-                                  .includes(taxonomies: [:parent, :children]),
+      visibles_para_arbol(
+        Decidim::Proposals::Proposal.where(component: comp_conflictos)
+                                    .where.not(published_at: nil)
+                                    .includes(taxonomies: [:parent, :children])
+      ),
       ArbolConfig::ESTADOS_CONFLICTOS
     )
 
@@ -82,7 +84,7 @@ module ConflictoMapperArbol
     end
     return Decidim::Proposals::Proposal.none if pacto_item.blank? || conflicto_item.blank?
 
-    base = Decidim::Proposals::Proposal.where(component: componente_propuestas)
+    base = visibles_para_arbol(Decidim::Proposals::Proposal.where(component: componente_propuestas))
     con_pacto = base.where(id: base.joins(:taxonomies)
                                    .where("decidim_taxonomies.id = ?", pacto_item.id))
     con_hijo = con_pacto.where(id: con_pacto.joins(:taxonomies)
@@ -99,10 +101,12 @@ module ConflictoMapperArbol
 
   # proposals del componente "Pactos" que llevan ese item de pacto
   def propuestas_de_pacto(pacto_item, componente_pactos, estados: [:todas])
-    rel = Decidim::Proposals::Proposal.where(component: componente_pactos)
-                                      .where.not(published_at: nil)
-                                      .joins(:taxonomies)
-                                      .where("decidim_taxonomies.id = ?", pacto_item.id)
+    rel = visibles_para_arbol(
+      Decidim::Proposals::Proposal.where(component: componente_pactos)
+                                  .where.not(published_at: nil)
+                                  .joins(:taxonomies)
+                                  .where("decidim_taxonomies.id = ?", pacto_item.id)
+    )
     filtrar_estados(rel.order(:id), estados)
   end
 
@@ -143,6 +147,19 @@ module ConflictoMapperArbol
   end
 
   private
+
+  # Excluye del arbol:
+  #  - propuestas RETIRADAS por sus autores (withdrawn_at IS NULL se exige);
+  #  - propuestas RESPONDIDAS cuyo estado aun NO se ha publicado
+  #    (answered_at NOT NULL y state_published_at NULL): Proposal#state
+  #    devuelve nil en ese caso, indistinguible de "sin respuesta", y no
+  #    deben mostrarse como vigentes.
+  # OJO: no filtrar por state_published_at = nil solo: las propuestas sin
+  # respuesta tambien lo tienen a nil y son justo la mayoria del arbol.
+  def visibles_para_arbol(relacion)
+    relacion.where(withdrawn_at: nil)
+            .where.not("answered_at IS NOT NULL AND state_published_at IS NULL")
+  end
 
   # estados: simbolos de ArbolConfig. :todas o vacio = sin filtrar.
   #

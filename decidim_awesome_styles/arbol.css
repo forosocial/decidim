@@ -111,6 +111,12 @@
     padding: .3rem .8rem; border: 1px solid #c6d4f5; border-radius: 4px;
     background: #e8eefc; color: #1a5fd0; font-weight: 600; font-size: .9rem;
   }
+  .arbol-global-modal {
+    display: inline-flex; align-items: center; gap: .4rem;
+    user-select: none;
+    padding: .3rem .8rem; border: 1px solid #c6d4f5; border-radius: 4px;
+    background: #e8eefc; color: #1a5fd0; font-weight: 600; font-size: .6rem;
+  }
   .arbol-global-icon { display: inline-block; transition: transform .15s ease; }
   .layout-item:has(.arbol-global-state:checked) .arbol-cuerpo { display: block; }
   .layout-item:has(.arbol-global-state:checked) .arbol-toggle { transform: rotate(90deg); color: #1a5fd0; }
@@ -122,20 +128,57 @@
 
 .arbol-estado--consensuada,
 .arbol-estado--accepted {
-  background: color-mix(in srgb, var(--success, #28a745) 12%, #fff);
+  background: #e8f7ee;   /* verde clarito */
   color: var(--success, #1e7e34);
-  border: 1px solid color-mix(in srgb, var(--success, #28a745) 35%, #fff);
+  border: 1px solid #bfe6cf;
 }
 .arbol-estado--evaluating {
-  background: color-mix(in srgb, var(--warning, #f5a623) 16%, #fff);
-  color: color-mix(in srgb, var(--warning, #f5a623) 70%, #000);
-  border: 1px solid color-mix(in srgb, var(--warning, #f5a623) 40%, #fff);
+  background: #fdf3dd;   /* amarillo clarito */
+  color: var(--warning, #8a6d1f);
+  border: 1px solid #f2ddb0;
 }
 .arbol-estado--rejected {
-  background: color-mix(in srgb, var(--alert, #e7131a) 8%, #fff);
+  background: #fdeaea;   /* rojo clarito */
   color: var(--alert, #c8232a);
-  border: 1px solid color-mix(in srgb, var(--alert, #e7131a) 28%, #fff);
+  border: 1px solid #f5c6c6;
 }
 
 /* ocultacion opcional de estados desde awesome (ej.: ocultar rechazadas) */
 /* .arbol-estado--rejected { display: none; } */
+
+
+/* === ayuda: boton + modal de leyenda (checkbox hack, sin JS) === */
+.arbol-ayuda-boton { display: inline-flex;
+                     vertical-align: middle;
+                     margin-left: .75rem;
+                     font-size: 2.9rem !important;
+                     padding: .35rem .6rem;}
+input.arbol-ayuda-state { display: none !important; }
+
+.arbol-modal {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0, 0, 0, .5);  /* sintaxis clasica: awesome compila con Sass */
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.arbol-ayuda-state:checked ~ .arbol-modal { display: flex; }
+.arbol-modal-caja {
+  position: relative; background: #fff; border-radius: 8px;
+  width: 100%; max-width: 36rem; max-height: 85vh; overflow: auto; padding: 1.5rem;
+}
+.arbol-modal-caja h2 { margin-top: 0; }
+.arbol-modal-caja p { font-size: .9rem; }
+.arbol-modal-cerrar {
+  position: absolute; top: .5rem; right: .8rem; cursor: pointer;
+  font-size: 1.3rem; color: #666; line-height: 1;
+}
+
+
+/* === titulo: boton de ayuda anclado al final de la linea, a la derecha === */
+.arbol-titulo { position: relative; padding-right: 6rem; }
+.arbol-titulo .arbol-ayuda-boton {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 0;
+}
